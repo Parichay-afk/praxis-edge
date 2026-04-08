@@ -663,9 +663,13 @@ footer{background:#0c0c18;padding:36px 6%;border-top:1px solid rgba(255,255,255,
       </div>
       <div class="fi"><label>Tell us about your institution</label><textarea id="pe-message" placeholder="A brief overview of what you're looking to achieve..." rows="4"></textarea></div>
       <button class="bsub" id="pe-submit" type="button" onclick="peSubmit()">Book a Free Consultation →</button>
-      <div id="pe-success" style="display:none;margin-top:14px;padding:16px 20px;background:rgba(124,85,245,.12);border:1px solid rgba(124,85,245,.3);border-radius:8px;color:#a78bfa;font-size:14px;font-weight:500;">&#10003;&nbsp; Received. We'll be in touch within one business day.</div>
-      <div id="pe-error" style="display:none;margin-top:14px;padding:16px 20px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);border-radius:8px;color:#f87171;font-size:14px;">Something went wrong. Please email us at <a href="mailto:hello@praxisadvertising.com" style="color:#a78bfa;">hello@praxisadvertising.com</a></div>
     </div>
+    <div id="pe-success" style="display:none;margin-top:32px;padding:32px 36px;background:rgba(124,85,245,.1);border:1px solid rgba(124,85,245,.3);border-radius:12px;text-align:center;">
+      <div style="font-size:28px;margin-bottom:12px;">✓</div>
+      <div style="color:#a78bfa;font-size:18px;font-weight:600;margin-bottom:8px;">We've got your details.</div>
+      <div style="color:rgba(255,255,255,.55);font-size:14px;line-height:1.7;">A member of the Praxis Edge team will be in touch within one business day to discuss how we can help your institution stand apart.</div>
+    </div>
+    <div id="pe-error" style="display:none;margin-top:14px;padding:16px 20px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);border-radius:8px;color:#f87171;font-size:14px;">Something went wrong. Please email us at <a href="mailto:hello@praxisadvertising.com" style="color:#a78bfa;">hello@praxisadvertising.com</a></div>
   </div>
 </div>
 
@@ -887,7 +891,7 @@ function peSubmit(){
   .then(r=>r.json())
   .then(data=>{
     if(data.success){
-      document.querySelector('.form').style.display='none';
+      document.getElementById('pe-submit').closest('.form').style.display='none';
       document.getElementById('pe-success').style.display='block';
     } else {
       document.getElementById('pe-error').style.display='block';
