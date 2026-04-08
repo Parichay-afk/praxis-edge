@@ -651,18 +651,20 @@ footer{background:#0c0c18;padding:36px 6%;border-top:1px solid rgba(255,255,255,
     </div>
     <div class="form" data-sr>
       <div class="fr">
-        <div class="fi"><label>Your Name</label><input type="text" placeholder="Full name" autocomplete="name"/></div>
-        <div class="fi"><label>Institution</label><input type="text" placeholder="School / University / Institute"/></div>
+        <div class="fi"><label>Your Name</label><input id="pe-name" type="text" placeholder="Full name" autocomplete="name"/></div>
+        <div class="fi"><label>Institution</label><input id="pe-institution" type="text" placeholder="School / University / Institute"/></div>
       </div>
       <div class="fr">
-        <div class="fi"><label>Your Role</label><input type="text" placeholder="Principal / Marketing Manager..."/></div>
-        <div class="fi"><label>Email Address</label><input type="email" placeholder="your@institution.com" autocomplete="email"/></div>
+        <div class="fi"><label>Your Role</label><input id="pe-role" type="text" placeholder="Principal / Marketing Manager..."/></div>
+        <div class="fi"><label>Email Address</label><input id="pe-email" type="email" placeholder="your@institution.com" autocomplete="email"/></div>
       </div>
       <div class="fi"><label>Area of Interest</label>
-        <select><option value="">Select one...</option><option>Marketing and Communications</option><option>Physical Spaces and Environment</option><option>Both — Integrated Partnership</option><option>New School Launch</option><option>Not sure yet, let's talk</option></select>
+        <select id="pe-interest"><option value="">Select one...</option><option>Marketing and Communications</option><option>Physical Spaces and Environment</option><option>Both — Integrated Partnership</option><option>New School Launch</option><option>Not sure yet, let's talk</option></select>
       </div>
-      <div class="fi"><label>Tell us about your institution</label><textarea placeholder="A brief overview of what you're looking to achieve..." rows="4"></textarea></div>
-      <button class="bsub" type="button">Book a Free Consultation →</button>
+      <div class="fi"><label>Tell us about your institution</label><textarea id="pe-message" placeholder="A brief overview of what you're looking to achieve..." rows="4"></textarea></div>
+      <button class="bsub" id="pe-submit" type="button" onclick="peSubmit()">Book a Free Consultation →</button>
+      <div id="pe-success" style="display:none;margin-top:14px;padding:16px 20px;background:rgba(124,85,245,.12);border:1px solid rgba(124,85,245,.3);border-radius:8px;color:#a78bfa;font-size:14px;font-weight:500;">&#10003;&nbsp; Received. We'll be in touch within one business day.</div>
+      <div id="pe-error" style="display:none;margin-top:14px;padding:16px 20px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);border-radius:8px;color:#f87171;font-size:14px;">Something went wrong. Please email us at <a href="mailto:hello@praxisadvertising.com" style="color:#a78bfa;">hello@praxisadvertising.com</a></div>
     </div>
   </div>
 </div>
@@ -848,6 +850,59 @@ if(mc){
 }
 
 })();
+</script>
+
+<script>
+function peSubmit(){
+  const name=document.getElementById('pe-name').value.trim();
+  const institution=document.getElementById('pe-institution').value.trim();
+  const role=document.getElementById('pe-role').value.trim();
+  const email=document.getElementById('pe-email').value.trim();
+  const interest=document.getElementById('pe-interest').value;
+  const message=document.getElementById('pe-message').value.trim();
+  const btn=document.getElementById('pe-submit');
+
+  if(!name||!email){
+    document.getElementById('pe-error').style.display='block';
+    document.getElementById('pe-error').textContent='Please fill in your name and email address.';
+    return;
+  }
+
+  btn.textContent='Sending...';
+  btn.disabled=true;
+  document.getElementById('pe-error').style.display='none';
+
+  const fd=new FormData();
+  fd.append('access_key','edfc20c5-9d29-49a3-a583-6aeaaab608e3');
+  fd.append('subject','New Praxis Edge Enquiry — '+institution+' ['+interest+']');
+  fd.append('from_name','Praxis Edge Form');
+  fd.append('name',name);
+  fd.append('email',email);
+  fd.append('institution',institution);
+  fd.append('role',role);
+  fd.append('area_of_interest',interest);
+  fd.append('message',message);
+
+  fetch('https://api.web3forms.com/submit',{method:'POST',body:fd})
+  .then(r=>r.json())
+  .then(data=>{
+    if(data.success){
+      document.querySelector('.form').style.display='none';
+      document.getElementById('pe-success').style.display='block';
+    } else {
+      document.getElementById('pe-error').style.display='block';
+      document.getElementById('pe-error').innerHTML='Something went wrong. Please email us at <a href="mailto:hello@praxisadvertising.com" style="color:#a78bfa;">hello@praxisadvertising.com</a>';
+      btn.textContent='Book a Free Consultation →';
+      btn.disabled=false;
+    }
+  })
+  .catch(()=>{
+    document.getElementById('pe-error').style.display='block';
+    document.getElementById('pe-error').innerHTML='Something went wrong. Please email us at <a href="mailto:hello@praxisadvertising.com" style="color:#a78bfa;">hello@praxisadvertising.com</a>';
+    btn.textContent='Book a Free Consultation →';
+    btn.disabled=false;
+  });
+}
 </script>
 </body>
 </html>
