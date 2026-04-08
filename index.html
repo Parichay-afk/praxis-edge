@@ -857,6 +857,14 @@ if(mc){
 </script>
 
 <script>
+// Work cards — link to praxisadvertising.com/work
+document.querySelectorAll('.wc').forEach(function(card){
+  card.style.cursor='pointer';
+  card.addEventListener('click',function(){
+    window.open('https://praxisadvertising.com/work','_blank','noopener');
+  });
+});
+
 function peSubmit(){
   const name=document.getElementById('pe-name').value.trim();
   const institution=document.getElementById('pe-institution').value.trim();
