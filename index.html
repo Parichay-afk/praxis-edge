@@ -17,7 +17,7 @@
 :root{
   --navy:#0e0640;
   --gdark:#15121f;
-  --gmid:#1c1929;
+  --gmid:#15121f;  /* unified with gdark */
   --accent:#3b1fa8;
   --violet:#7c55f5;
   --vl:#a78bfa;
@@ -147,15 +147,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(14,6,64,.78)
 @keyframes fu{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:none;}}
 @keyframes pd{0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,.5);}50%{box-shadow:0 0 0 5px rgba(167,139,250,0);}}
 
-/* ── GRADIENT BRIDGE (for smoother section transitions) ── */
-.bridge{position:relative;}
-.bridge::before{content:'';position:absolute;top:0;left:0;right:0;height:80px;pointer-events:none;z-index:1;}
-.bridge-from-navy::before{background:linear-gradient(to bottom,var(--navy),transparent);}
-.bridge-from-gold::before{background:linear-gradient(to bottom,var(--gold),transparent);opacity:.18;}
-.bridge-from-lav::before{background:linear-gradient(to bottom,var(--lav),transparent);}
-.bridge-from-gdark::before{background:linear-gradient(to bottom,var(--gdark),transparent);}
-.bridge-from-ivory::before{background:linear-gradient(to bottom,var(--ivory),transparent);}
-.bridge-from-gmid::before{background:linear-gradient(to bottom,var(--gmid),transparent);}
+
+/* ── SECTION-TOP ACCENT (1px gold hairline marking each color boundary) ── */
+.section-edge{position:relative;}
+.section-edge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent 0%,var(--gold) 20%,var(--gold) 80%,transparent 100%);opacity:.35;z-index:5;pointer-events:none;}
 
 /* ── MARQUEE ── */
 .mqs{background:var(--gold);overflow:hidden;padding:13px 0;white-space:nowrap;position:relative;}
@@ -257,13 +252,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(14,6,64,.78)
 .wcta{text-align:center;margin-top:42px;}
 
 /* ── TESTIMONIALS + LOGOS ── */
-.testi{background:var(--ivory);position:relative;}
+.testi{background:var(--lav);position:relative;}
 .testi-c{max-width:1180px;margin:0 auto;padding:48px 6% var(--vp);}
 .tg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff;}
 .tc{padding:38px 30px;border-right:1px solid var(--border);background:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:background .3s;}
 .tc::after{content:'';position:absolute;bottom:0;left:0;right:100%;height:3px;background:var(--violet);transition:right .45s cubic-bezier(.16,1,.3,1);}
 .tc:hover::after{right:0;}
-.tc:hover{background:var(--ivory);}
+.tc:hover{background:#faf6ff;}
 .tc:last-child{border-right:none;}
 .tm{font-family:var(--serif);font-size:54px;color:var(--violet);line-height:.7;margin-bottom:18px;opacity:.5;}
 .tt{font-family:var(--serif);font-size:16px;color:var(--navy);line-height:1.6;font-style:italic;flex:1;}
@@ -501,7 +496,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
 </div>
 
 <!-- WHY PRAXIS -->
-<div class="why bridge bridge-from-gold">
+<div class="why section-edge">
   <div class="why-top">
     <div>
       <div class="ey" data-sr>Why It Matters</div>
@@ -515,7 +510,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
     <div class="pc" data-sr><span class="pn">03</span><div class="pt">Physical spaces that undercut your message</div><div class="pb">A campus that feels dated or generic undermines every promise your marketing makes. Environment is a statement.</div></div>
     <div class="pc" data-sr><span class="pn">04</span><div class="pt">Too many vendors, no unified voice</div><div class="pb">Fragmented agencies mean fragmented messaging. Praxis Edge unifies strategy and execution under one roof.</div></div>
   </div>
-  <div class="why-stak bridge bridge-from-lav">
+  <div class="why-stak section-edge">
     <div class="wsi">
       <div class="ey dk" data-sr>Every Stakeholder. Every Touchpoint.</div>
       <h2 class="sf lg dk" data-sf style="margin-top:12px;margin-bottom:42px;max-width:680px;"><span class="w">We serve </span><span class="w">the whole </span><span class="w">institution.</span></h2>
@@ -530,7 +525,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
 </div>
 
 <!-- MARKETING -->
-<div class="mkt bridge bridge-from-gdark" id="mkt">
+<div class="mkt section-edge" id="mkt">
   <div class="sh">
     <div class="shi">
       <div>
@@ -553,7 +548,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
 </div>
 
 <!-- SPACES -->
-<div class="sp bridge bridge-from-ivory" id="spaces">
+<div class="sp section-edge" id="spaces">
   <div class="sh">
     <div class="shi dk">
       <div>
@@ -579,7 +574,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
 </div>
 
 <!-- WORK -->
-<div class="wk bridge bridge-from-gmid" id="work">
+<div class="wk section-edge" id="work">
   <div class="sh">
     <div class="shi">
       <div>
@@ -620,7 +615,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
 </div>
 
 <!-- TESTIMONIALS + CLIENTS -->
-<div class="testi">
+<div class="testi section-edge">
   <div class="sh">
     <div class="shi">
       <div>
@@ -661,7 +656,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
 </div>
 
 <!-- FAQ -->
-<div class="faq">
+<div class="faq section-edge">
   <div class="sh">
     <div class="shi full">
       <div>
@@ -681,7 +676,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
 </div>
 
 <!-- CONTACT -->
-<div class="ct bridge bridge-from-ivory" id="contact">
+<div class="ct section-edge" id="contact">
   <div class="sh">
     <div class="shi dk full">
       <div>
