@@ -129,7 +129,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(14,6,64,.78)
 .hey{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:22px;font-weight:500;opacity:0;animation:fu .7s .45s cubic-bezier(.16,1,.3,1) forwards;}
 .hh1{font-size:clamp(46px,7.5vw,108px);color:#fff;line-height:.96;letter-spacing:-.035em;font-weight:800;opacity:0;animation:fu .9s .6s cubic-bezier(.16,1,.3,1) forwards;}
 .hh1 em{color:var(--vl);font-style:italic;font-family:var(--serif);font-weight:400;}
-.tw{color:var(--vl);font-style:italic;font-family:var(--serif);font-weight:400;display:inline-block;min-width:4px;}
+.hh1-line{display:block;min-height:1.92em;}
+.hh1-line .tw{color:var(--vl);font-style:italic;font-family:var(--serif);font-weight:400;}
+.tw{color:var(--vl);font-style:italic;font-family:var(--serif);font-weight:400;display:inline-block;min-height:1em;vertical-align:baseline;}
 .tw::after{content:'|';display:inline-block;color:var(--vl);margin-left:2px;animation:bl 1s infinite;font-weight:300;font-family:var(--sans);}
 @keyframes bl{0%,49%{opacity:1;}50%,100%{opacity:0;}}
 .hrule{width:0;height:3px;background:linear-gradient(to right,var(--violet),var(--vl));margin:30px 0;border-radius:2px;animation:rg .9s 1.1s cubic-bezier(.16,1,.3,1) forwards;}
@@ -471,7 +473,7 @@ footer{background:#0a0815;padding:38px 6%;border-top:1px solid rgba(255,255,255,
     <div class="hl">
       <div class="hbadge"><div class="bdot"></div>Education Vertical · Praxis Advertising</div>
       <div class="hey">Dubai, UAE · Est. 1999 · Serving MENA</div>
-      <h1 class="hh1">The edge your<br>institution <span class="tw" id="tw"></span></h1>
+      <h1 class="hh1">The edge your<br><span class="hh1-line">institution&nbsp;<span class="tw" id="tw"></span></span></h1>
       <div class="hrule"></div>
       <p class="hsub">From enrollment campaigns to campus environments, Praxis Edge is the integrated education partner that shapes how your institution is seen, felt, and chosen.</p>
       <div class="hacts">
@@ -800,7 +802,7 @@ function drawCanvas(){
 drawCanvas();
 
 /* ── TYPEWRITER ── */
-const words=['deserves.','has been waiting for.','is ready to become.','was always meant to be.'];
+const words=['deserves.','has been waiting for.','is ready to become.','was meant to be.'];
 let wi=0,ci=0,del=false,paused=false;
 const twEl=document.getElementById('tw');
 function type(){
