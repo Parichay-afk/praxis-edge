@@ -9,8 +9,8 @@ export const site = {
     url: 'https://praxisadvertising.com',
   },
   gaId: 'G-VFVV8PNZS2',
-  // Web3Forms access key — set this when ready
-  web3formsKey: 'REPLACE_WITH_WEB3FORMS_ACCESS_KEY',
+  // Web3Forms access key (https://web3forms.com) — submissions emailed to `email` above
+  web3formsKey: '8150cfff-8088-4030-b856-e5628540297b',
 };
 
 export const faqs = [
