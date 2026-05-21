@@ -1,0 +1,119 @@
+---
+import { site } from '../data/site';
+---
+
+<section class="ct" id="contact" aria-labelledby="contact-title">
+  <div class="sh">
+    <div class="shi dk full">
+      <div>
+        <div class="ey dk" data-sr>Get in Touch</div>
+        <h2 class="sf lg dk" id="contact-title" data-sf style="margin-top:12px;max-width:700px;">
+          <span class="w">Ready to transform how </span><span class="w">your institution </span
+          ><span class="w">is chosen?</span>
+        </h2>
+      </div>
+    </div>
+  </div>
+  <div class="ct-c">
+    <div class="ct-l">
+      <p>
+        Whether you're looking to grow enrollments, reimagine your brand, or transform your campus,
+        we'd love to explore how Praxis Edge can help you stand apart.
+      </p>
+      <a class="ct-em" href={`mailto:${site.email}`}>{site.email}</a>
+      <div class="ct-lo">Dubai, UAE · Serving institutions across MENA</div>
+    </div>
+    <form
+      class="form"
+      data-sr
+      id="contact-form"
+      action="https://api.web3forms.com/submit"
+      method="POST"
+      novalidate
+      aria-describedby="form-status"
+    >
+      <input type="hidden" name="access_key" value={site.web3formsKey} />
+      <input type="hidden" name="subject" value="New consultation request — praxis-edge.com" />
+      <input type="hidden" name="from_name" value="Praxis Edge website" />
+      <input type="hidden" name="redirect" value="false" />
+      <input
+        type="checkbox"
+        name="botcheck"
+        tabindex="-1"
+        autocomplete="off"
+        style="position:absolute;left:-9999px;opacity:0;"
+        aria-hidden="true"
+      />
+      <div class="fr">
+        <div class="fi">
+          <label for="f-name">Your Name</label>
+          <input
+            id="f-name"
+            name="name"
+            type="text"
+            placeholder="Full name"
+            autocomplete="name"
+            required
+            minlength="2"
+          />
+        </div>
+        <div class="fi">
+          <label for="f-institution">Institution</label>
+          <input
+            id="f-institution"
+            name="institution"
+            type="text"
+            placeholder="School / University / Institute"
+            required
+          />
+        </div>
+      </div>
+      <div class="fr">
+        <div class="fi">
+          <label for="f-role">Your Role</label>
+          <input
+            id="f-role"
+            name="role"
+            type="text"
+            placeholder="Principal / Marketing Manager…"
+            autocomplete="organization-title"
+          />
+        </div>
+        <div class="fi">
+          <label for="f-email">Email Address</label>
+          <input
+            id="f-email"
+            name="email"
+            type="email"
+            placeholder="your@institution.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+      </div>
+      <div class="fi">
+        <label for="f-interest">Area of Interest</label>
+        <select id="f-interest" name="interest" required>
+          <option value="">Select one…</option>
+          <option>Marketing and Communications</option>
+          <option>Physical Spaces and Environment</option>
+          <option>Both — Integrated Partnership</option>
+          <option>New School Launch</option>
+          <option>Not sure yet, let's talk</option>
+        </select>
+      </div>
+      <div class="fi">
+        <label for="f-message">Tell us about your institution</label>
+        <textarea
+          id="f-message"
+          name="message"
+          placeholder="A brief overview of what you're looking to achieve…"
+          rows="4"
+          required
+          minlength="10"></textarea>
+      </div>
+      <button class="bsub" type="submit" id="f-submit">Book a Free Consultation →</button>
+      <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>

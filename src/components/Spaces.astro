@@ -1,0 +1,54 @@
+---
+import { spaceServices, spaceCaseStudies } from '../data/services';
+---
+
+<section class="sp" id="spaces" aria-labelledby="spaces-title">
+  <div class="sh">
+    <div class="shi dk">
+      <div>
+        <div class="plbl dkt" data-sr>02 — Physical Spaces and Environment</div>
+        <h2 class="sf lg dk" id="spaces-title" data-sf style="margin-top:20px;">
+          <span class="w">Your campus is your </span><span class="w">most powerful </span><span
+            class="w">marketing tool.</span
+          >
+        </h2>
+      </div>
+      <p class="bt dk" data-sr>
+        The moment a parent steps through your door, or a student walks down your corridor, they
+        form an impression that no advertisement can replicate. We design environments that
+        communicate your values, celebrate discovery, and make every stakeholder feel something
+        unforgettable.
+      </p>
+    </div>
+  </div>
+  <div class="sp-c">
+    <div class="spg">
+      {
+        spaceServices.map((s) => (
+          <div class="spc" data-sr>
+            <div class="sp-n">{s.number}</div>
+            <div class="sp-t">{s.title}</div>
+            <div class="sp-d">{s.description}</div>
+            <div class="sp-i">{s.pull}</div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="spcsg">
+      {
+        spaceCaseStudies.map((c, i) => (
+          <div
+            class="spcs"
+            data-sr
+            style={i === spaceCaseStudies.length - 1 ? 'border-right:none;' : ''}
+          >
+            <div class="spcs-y">{c.year}</div>
+            <div class="spcs-c">{c.client}</div>
+            <div class="spcs-t">{c.title}</div>
+            <div class="spcs-d">{c.description}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,62 @@
+---
+import { testimonials, logos } from '../data/site';
+---
+
+<section class="testi" aria-labelledby="testi-title">
+  <div class="sh">
+    <div class="shi">
+      <div>
+        <div class="ey" data-sr>What Our Clients Say</div>
+        <h2 class="sf lg" id="testi-title" data-sf style="margin-top:12px;">
+          <span class="w">Words from the </span><span class="w">institutions </span><span
+            class="w">we serve.</span
+          >
+        </h2>
+      </div>
+      <p class="bt" data-sr>
+        Three decades of education partnerships across the UAE and MENA. Here's what the
+        institutions we serve have to say.
+      </p>
+    </div>
+  </div>
+  <div class="testi-c">
+    <div class="tg">
+      {
+        testimonials.map((t, i) => (
+          <div
+            class="tc"
+            data-sr
+            style={i === testimonials.length - 1 ? 'border-right:none;' : ''}
+          >
+            <div class="tm" aria-hidden="true">
+              "
+            </div>
+            <div class="tt">{t.quote}</div>
+            <div class="ta">
+              <div class="tan">{t.name}</div>
+              <div class="tar">{t.role}</div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="lw" data-sr>
+      <div class="ll">Trusted by leading institutions across the UAE and MENA</div>
+      <div class="lg-grid">
+        {
+          logos.map((l) => (
+            <div class="lc">
+              <div class="ln">{l.name}</div>
+              <div class="ls">{l.city}</div>
+            </div>
+          ))
+        }
+        <div class="lc lc-more" id="mc">
+          <div class="lc-mt">and many more</div>
+          <div class="lcr" id="lr1" style="width:70px;height:70px;"></div>
+          <div class="lcr" id="lr2" style="width:120px;height:120px;transition-delay:.07s;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

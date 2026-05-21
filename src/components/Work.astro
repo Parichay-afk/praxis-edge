@@ -1,0 +1,85 @@
+---
+import { projects } from '../data/work';
+
+const featured = projects.filter((p) => p.featured);
+const rest = projects.filter((p) => !p.featured);
+
+const sizeClass = (size?: 'tall' | 'wide') => (size ? ` ${size}` : '');
+---
+
+<section class="wk" id="work" aria-labelledby="work-title">
+  <div class="sh">
+    <div class="shi">
+      <div>
+        <div class="ey" data-sr>Our Work in Education</div>
+        <h2 class="sf lg" id="work-title" data-sf style="margin-top:12px;">
+          <span class="w">25 years. </span><span class="w">One obsession.</span>
+        </h2>
+      </div>
+      <p class="bt" data-sr>
+        Every project is a partnership. Every outcome is intentional. A selection of what we've
+        transformed and launched across education in the UAE and MENA.
+      </p>
+    </div>
+  </div>
+  <div class="wk-c">
+    <div class="wg">
+      {
+        featured.map((p) => (
+          <div class={`wc${sizeClass(p.size)}`} data-sr>
+            <div class="wci">
+              <img src={p.image} alt={p.alt} loading="lazy" />
+              <div class="wcov" />
+            </div>
+            <div class="wcb">
+              <div class="wcc">
+                {p.tags.map((t) => (
+                  <span>{t}</span>
+                ))}
+              </div>
+              <div class="wct">{p.title}</div>
+            </div>
+            <div class="wca" aria-hidden="true">↗</div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="wtw" data-sr>
+      <button class="wtog" type="button" id="wtog" aria-expanded="false" aria-controls="we">
+        <span id="wtl">See More Work</span>
+        <span class="wi" id="wti" aria-hidden="true">↓</span>
+      </button>
+    </div>
+    <div class="we" id="we" aria-hidden="true">
+      <div class="wg" style="margin-top:16px;">
+        {
+          rest.map((p) => (
+            <div class={`wc${sizeClass(p.size)}`}>
+              <div class="wci">
+                <img src={p.image} alt={p.alt} loading="lazy" />
+                <div class="wcov" />
+              </div>
+              <div class="wcb">
+                <div class="wcc">
+                  {p.tags.map((t) => (
+                    <span>{t}</span>
+                  ))}
+                </div>
+                <div class="wct">{p.title}</div>
+              </div>
+              <div class="wca" aria-hidden="true">↗</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="wcta" data-sr>
+      <a
+        href="https://praxisadvertising.com/work"
+        target="_blank"
+        rel="noopener"
+        class="bp">View All Work on PraxisAdvertising.com ↗</a
+      >
+    </div>
+  </div>
+</section>

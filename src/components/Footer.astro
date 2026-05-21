@@ -1,0 +1,23 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="fi-w">
+    <div>
+      <Logo height={26} variant="muted" />
+      <div class="fsub">A Praxis Advertising Initiative · Dubai, UAE · Est. 1999</div>
+    </div>
+    <div class="fls">
+      <a href="#mkt">Marketing</a>
+      <a href="#spaces">Spaces</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+      <a href={site.parent.url} target="_blank" rel="noopener">{site.parent.name} ↗</a>
+    </div>
+    <div class="fcp">© {year} Praxis Advertising. All rights reserved.</div>
+  </div>
+</footer>

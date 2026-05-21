@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Page not found — Praxis Edge" noindex>
+  <Nav />
+  <main id="main" class="notfound">
+    <div class="nf-inner">
+      <div class="nf-code">404</div>
+      <h1 class="nf-title">This page doesn't exist.</h1>
+      <p class="nf-body">
+        The link may be outdated, or the page has been moved. Let's get you back to somewhere useful.
+      </p>
+      <div class="nf-acts">
+        <a class="bp" href="/">Back to Home</a>
+        <a class="bo" href="/#contact">Contact Us</a>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .notfound {
+    min-height: calc(100vh - 62px);
+    background: var(--navy);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    padding: 100px 6% 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .notfound::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(124, 85, 245, 0.18), transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(167, 139, 250, 0.12), transparent 50%);
+    pointer-events: none;
+  }
+  .nf-inner {
+    text-align: center;
+    max-width: 560px;
+    position: relative;
+    z-index: 1;
+  }
+  .nf-code {
+    font-family: var(--serif);
+    font-size: clamp(96px, 18vw, 200px);
+    line-height: 1;
+    color: var(--vl);
+    letter-spacing: -0.04em;
+    font-style: italic;
+  }
+  .nf-title {
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 18px 0 14px;
+  }
+  .nf-body {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+  .nf-acts {
+    display: inline-flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>

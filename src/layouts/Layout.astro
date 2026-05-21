@@ -1,0 +1,146 @@
+---
+import '../styles/global.css';
+import { site, faqs } from '../data/site';
+
+type Props = {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+};
+
+const {
+  title = `${site.name} — Education Marketing & Campus Design · UAE & MENA`,
+  description = site.description,
+  canonical = Astro.url.href,
+  ogImage = `${site.url}/og-image.png`,
+  noindex = false,
+} = Astro.props;
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  alternateName: `${site.name} — A Praxis Advertising Initiative`,
+  url: site.url + '/',
+  logo: `${site.url}/og-image.png`,
+  foundingDate: '1999',
+  parentOrganization: {
+    '@type': 'Organization',
+    name: site.parent.name,
+    url: site.parent.url,
+  },
+  areaServed: [
+    { '@type': 'Country', name: 'United Arab Emirates' },
+    { '@type': 'Place', name: 'MENA' },
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Dubai',
+    addressCountry: 'AE',
+  },
+  email: site.email,
+  sameAs: [site.parent.url],
+  knowsAbout: [
+    'Education marketing',
+    'Enrollment marketing',
+    'Brand strategy',
+    'Campus design',
+    'Wayfinding',
+    'Space transformation',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0e0640" />
+    <meta name="color-scheme" content="dark light" />
+    <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%233b1fa8'/><text x='4' y='24' font-family='Georgia,serif' font-size='22' font-weight='bold' fill='%23c0b8d8'>p</text><text x='16' y='24' font-family='Georgia,serif' font-size='22' font-weight='bold' fill='%23ffffff'>e</text></svg>"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='32' fill='%233b1fa8'/><text x='20' y='130' font-family='Georgia,serif' font-size='120' font-weight='bold' fill='%23c0b8d8'>p</text><text x='92' y='130' font-family='Georgia,serif' font-size='120' font-weight='bold' fill='%23ffffff'>e</text></svg>"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_AE" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — Education Marketing and Campus Design`} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&family=DM+Serif+Display:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Google tag (gtag.js) — consent-gated -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`}></script>
+    <script is:inline define:vars={{ gaId: site.gaId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        window.dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'granted',
+      });
+      gtag('js', new Date());
+      gtag('config', gaId, { anonymize_ip: true });
+      window.gtag = gtag;
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div id="cur" aria-hidden="true"></div>
+    <div id="cur-ring" aria-hidden="true"></div>
+    <div id="tracker" aria-hidden="true">
+      <div id="tlbg"></div>
+      <div id="tprog"></div>
+    </div>
+
+    <slot />
+
+    <script>
+      import '../scripts/main.client.ts';
+    </script>
+  </body>
+</html>

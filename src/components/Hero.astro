@@ -1,0 +1,99 @@
+---
+import { stats } from '../data/site';
+---
+
+<section class="hero" id="hero-top" aria-labelledby="hero-title">
+  <canvas id="hcv" aria-hidden="true"></canvas>
+  <div class="hl">
+    <div class="hbadge"><div class="bdot"></div>Education Vertical · Praxis Advertising</div>
+    <div class="hey">Dubai, UAE · Est. 1999 · Serving MENA</div>
+    <h1 class="hh1" id="hero-title">
+      The edge your<br />institution <span class="tw" id="tw" aria-live="polite"></span>
+    </h1>
+    <div class="hrule"></div>
+    <p class="hsub">
+      From enrollment campaigns to campus environments, Praxis Edge is the integrated education
+      partner that shapes how your institution is seen, felt, and chosen.
+    </p>
+    <div class="hacts">
+      <a href="#contact" class="bp">Book a Free Consultation</a>
+      <a href="#mkt" class="bo">Explore Our Services</a>
+    </div>
+  </div>
+  <div class="hr">
+    <div class="hcards">
+      <a
+        class="hcard hc1"
+        href="#spaces"
+        aria-label="Space Design — Campus environments that inspire"
+      >
+        <div class="hcbg" style="background:linear-gradient(135deg,#1e0f5c,#3b1fa8);"></div>
+        <div class="hcov"></div>
+        <div class="hcp" aria-hidden="true"></div>
+        <div class="hcin">
+          <div class="hctag">Space Design</div>
+          <div class="hcttl">Campus environments that inspire</div>
+        </div>
+      </a>
+      <a
+        class="hcard hc2"
+        href="#mkt"
+        aria-label="Enrollment Marketing — Full-funnel campaigns that convert"
+      >
+        <div class="hcbg" style="background:linear-gradient(135deg,#2d0d6e,#7c55f5);"></div>
+        <div class="hcov"></div>
+        <div class="hcin">
+          <div class="hctag">Enrollment Marketing</div>
+          <div class="hcttl">Full-funnel campaigns that convert</div>
+        </div>
+      </a>
+      <a
+        class="hcard hc3"
+        href="#mkt"
+        aria-label="Brand Strategy — Identities that stand apart"
+      >
+        <div class="hcbg" style="background:linear-gradient(135deg,#0d0640,#4c1d95);"></div>
+        <div class="hcov"></div>
+        <div class="hcp" aria-hidden="true" style="background:#f59e0b;"></div>
+        <div class="hcin">
+          <div class="hctag">Brand Strategy</div>
+          <div class="hcttl">Identities that stand apart</div>
+        </div>
+      </a>
+      <a class="hcard hc4" href="#spaces" aria-label="Wayfinding — Campus identity systems">
+        <div class="hcbg" style="background:linear-gradient(135deg,#1a0a6b,#7c55f5);"></div>
+        <div class="hcov"></div>
+        <div class="hcin">
+          <div class="hctag">Wayfinding</div>
+          <div class="hcttl">Campus identity systems</div>
+        </div>
+      </a>
+      <div
+        class="hring"
+        aria-hidden="true"
+        style="width:260px;height:260px;top:50%;left:50%;transform:translate(-50%,-50%);"
+      ></div>
+      <div
+        class="hring"
+        aria-hidden="true"
+        style="width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:.6s;border-color:rgba(124,85,245,.09);"
+      ></div>
+    </div>
+  </div>
+  <div class="hstats">
+    {
+      stats.map((s) => (
+        <div class="hst">
+          {s.count ? (
+            <div class="stn" data-count={s.value}>
+              0
+            </div>
+          ) : (
+            <div class="stn">{s.value}</div>
+          )}
+          <div class="stl">{s.label}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,37 @@
+---
+import { marketingServices } from '../data/services';
+---
+
+<section class="mkt" id="mkt" aria-labelledby="mkt-title">
+  <div class="sh">
+    <div class="shi">
+      <div>
+        <div class="plbl lgt" data-sr>01 — Marketing and Communications</div>
+        <h2 class="sf lg" id="mkt-title" data-sf style="margin-top:20px;">
+          <span class="w">Education marketing </span><span class="w">built to convert.</span>
+        </h2>
+      </div>
+      <p class="bt" data-sr>
+        We are not a generalist agency that happens to work with schools. Education is our focus.
+        With 25 years of regional experience, we understand every audience, every admissions
+        season, and every dynamic that matters. From brand to performance, we work as one team.
+      </p>
+    </div>
+  </div>
+  <div class="mkt-c">
+    <div class="svgg">
+      {
+        marketingServices.map((s) => (
+          <div class="svc" data-sr>
+            <div class="svc-in">
+              <div class="svc-n">{s.number}</div>
+              <div class="svc-t">{s.title}</div>
+              <div class="svc-d">{s.description}</div>
+            </div>
+            <div class="svc-a" aria-hidden="true">↗</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

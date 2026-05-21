@@ -1,0 +1,59 @@
+---
+import { pains, stakeholders } from '../data/site';
+---
+
+<section class="why" aria-labelledby="why-title">
+  <div class="why-top">
+    <div>
+      <div class="ey" data-sr>Why It Matters</div>
+      <h2 class="sf lg" id="why-title" data-sf style="margin-top:12px;">
+        <span class="w">The competition </span><span class="w">for students </span><span class="w"
+          >has never </span
+        ><span class="w">been fiercer.</span>
+      </h2>
+    </div>
+    <p class="bt" data-sr>
+      In today's crowded education landscape, institutions can no longer rely on reputation alone.
+      Every touchpoint shapes perception. The institutions that win communicate clearly,
+      consistently, and compellingly — and create physical environments that deliver on every
+      promise they make.
+    </p>
+  </div>
+  <div class="why-pains">
+    {
+      pains.map((p) => (
+        <div class="pc" data-sr>
+          <span class="pn">{p.n}</span>
+          <div class="pt">{p.title}</div>
+          <div class="pb">{p.body}</div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="why-stak">
+    <div class="wsi">
+      <div class="ey dk" data-sr>Every Stakeholder. Every Touchpoint.</div>
+      <h2 class="sf lg dk" data-sf style="margin-top:12px;margin-bottom:44px;max-width:640px;">
+        <span class="w">We serve </span><span class="w">the whole </span><span class="w"
+          >institution.</span
+        >
+      </h2>
+      <div class="skg">
+        {
+          stakeholders.map((s, i) => (
+            <div
+              class="skc"
+              data-sr
+              style={i === stakeholders.length - 1 ? 'border-right:none;' : ''}
+            >
+              <div class="skn">{s.n}</div>
+              <div class="skr">{s.role}</div>
+              <div class="skt">{s.title}</div>
+              <div class="skd">{s.desc}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

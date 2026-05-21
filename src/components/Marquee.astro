@@ -1,0 +1,12 @@
+---
+import { marquee } from '../data/site';
+
+// Double the items so the loop wraps seamlessly.
+const items = [...marquee, ...marquee, ...marquee, ...marquee];
+---
+
+<div class="mqs" aria-hidden="true">
+  <div class="mqt">
+    {items.map((i) => <span class="mqi">{i} ✦</span>)}
+  </div>
+</div>

@@ -1,0 +1,33 @@
+---
+import { faqs } from '../data/site';
+---
+
+<section class="faq" aria-labelledby="faq-title">
+  <div class="sh">
+    <div class="shi full">
+      <div>
+        <div class="ey" data-sr>Common Questions</div>
+        <h2 class="sf lg" id="faq-title" data-sf style="margin-top:12px;">
+          <span class="w">Your questions, </span><span class="w">answered.</span>
+        </h2>
+      </div>
+    </div>
+  </div>
+  <div class="faq-c">
+    {
+      faqs.map((f) => (
+        <div class="faq-i" data-sr>
+          <button class="faq-q" type="button" aria-expanded="false">
+            {f.q}
+            <span class="faq-ic" aria-hidden="true">
+              +
+            </span>
+          </button>
+          <div class="faq-b">
+            <div class="faq-a">{f.a}</div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

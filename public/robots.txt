@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://praxis-edge.com/sitemap-index.xml

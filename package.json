@@ -1,0 +1,26 @@
+{
+  "name": "praxis-edge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Praxis Edge — education marketing and campus design partner for institutions across the UAE and MENA.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "prettier --write \"src/**/*.{astro,ts,js,md,mdx,css}\" \"public/**/*.{xml,txt}\"",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/rss": "^4.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "prettier-plugin-astro": "^0.14.1"
+  }
+}

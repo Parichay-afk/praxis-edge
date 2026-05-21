@@ -1,0 +1,36 @@
+---
+type Props = {
+  height?: number;
+  variant?: 'light' | 'muted';
+};
+
+const { height = 30, variant = 'light' } = Astro.props;
+const leftFill = variant === 'muted' ? '#9a9a9a' : '#c0b8d8';
+const rightFill = variant === 'muted' ? '#7c55f5' : '#fff';
+const strokeFill = variant === 'muted' ? '#7c55f5' : '#fff';
+---
+
+<svg
+  height={height}
+  viewBox="0 0 210 36"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-label="Praxis Edge"
+>
+  <text
+    y="30"
+    font-family="'DM Serif Display',Georgia,serif"
+    font-size="34"
+    fill={leftFill}
+    letter-spacing="-0.5">praxis</text
+  >
+  <text
+    x="108"
+    y="30"
+    font-family="'DM Serif Display',Georgia,serif"
+    font-size="34"
+    fill={rightFill}
+    letter-spacing="-0.5">edge</text
+  >
+  <line x1="108" y1="6" x2="134" y2="6" stroke={strokeFill} stroke-width="2.2" stroke-linecap="round" />
+</svg>
