@@ -8,6 +8,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:og": "node scripts/build-og.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write \"src/**/*.{astro,ts,js,md,mdx,css}\" \"public/**/*.{xml,txt}\"",
