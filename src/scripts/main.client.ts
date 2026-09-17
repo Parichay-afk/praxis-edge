@@ -112,10 +112,15 @@ if (twEl && !reducedMotion) {
     'is ready to become.',
     'was always meant to be.',
   ];
-  let wi = 0,
-    ci = 0,
-    del = false,
-    paused = false;
+  // The first word is server-rendered so the <h1> reads as a complete
+  // sentence for crawlers and no-JS visitors. Resume from it rather than
+  // retyping it from scratch.
+  const rendered = twEl.textContent?.trim() ?? '';
+  const start = words.indexOf(rendered);
+  let wi = start === -1 ? 0 : start,
+    ci = start === -1 ? 0 : rendered.length,
+    del = start !== -1,
+    paused = start !== -1;
   function type() {
     if (paused) {
       paused = false;
@@ -140,8 +145,6 @@ if (twEl && !reducedMotion) {
     }
   }
   setTimeout(type, 1800);
-} else if (twEl) {
-  twEl.textContent = 'deserves.';
 }
 
 /* ── STAT COUNTERS ── */
