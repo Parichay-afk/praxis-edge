@@ -127,6 +127,12 @@ const orgJsonLd = {
       gtag('config', gaId, { anonymize_ip: true });
       window.gtag = gtag;
     </script>
+
+    <!-- OpenAI pixel (oaiq) -->
+    <script is:inline define:vars={{ oaiPixelId: site.oaiPixelId }}>
+      !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");
+      oaiq("init", { pixelId: oaiPixelId, debug: true });
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>

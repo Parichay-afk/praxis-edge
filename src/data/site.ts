@@ -11,6 +11,8 @@ export const site = {
   gaId: 'G-VFVV8PNZS2',
   // Web3Forms access key (https://web3forms.com) — submissions emailed to `email` above
   web3formsKey: '8150cfff-8088-4030-b856-e5628540297b',
+  // OpenAI pixel (oaiq) — SDK loads from bzrcdn.openai.com; allowed in the CSP
+  oaiPixelId: 'BVfzGdKfK2GZJ47JaUifNX',
 };
 
 export const faqs = [
