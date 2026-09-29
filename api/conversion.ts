@@ -29,13 +29,17 @@ const ALLOWED_ORIGINS = [
 /* Each event type has a fixed data.type, taken from the oaiq SDK's own
    mapping. Sending a mismatched pair gets the event dropped. */
 const DATA_TYPE: Record<string, string> = {
-  page_viewed: 'contents',
+  appointment_scheduled: 'customer_action',
+  checkout_started: 'contents',
+  contents_viewed: 'contents',
+  custom: 'custom',
   items_added: 'contents',
-  order_created: 'contents',
   lead_created: 'customer_action',
+  order_created: 'contents',
+  page_viewed: 'contents',
   registration_completed: 'customer_action',
   subscription_created: 'plan_enrollment',
-  custom: 'custom',
+  trial_started: 'plan_enrollment',
 };
 
 /* Minimal shapes — avoids pulling in @vercel/node just for types. */
