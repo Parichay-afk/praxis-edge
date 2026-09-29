@@ -5,6 +5,7 @@
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    oaiq?: (...args: unknown[]) => void;
   }
 }
 
@@ -324,6 +325,8 @@ if (form) {
         form.reset();
         setStatus('Thank you. We will be in touch within one business day.', 'ok');
         if (typeof window.gtag === 'function') window.gtag('event', 'generate_lead', { form_id: 'contact' });
+        if (typeof window.oaiq === 'function')
+          window.oaiq('measure', 'lead_created', { type: 'customer_action' });
       } else {
         throw new Error(data.message || 'Submission failed');
       }
