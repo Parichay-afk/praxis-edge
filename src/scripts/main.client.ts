@@ -231,6 +231,38 @@ window.addEventListener('scroll', onScroll, { passive: true });
 window.addEventListener('resize', onScroll, { passive: true });
 onScroll();
 
+/* ── PIXEL EVENTS ──
+   Tag any element with data-oaiq="<event_type>" to measure a click.
+   data.type is looked up here rather than written into the markup: the
+   SDK drops an event whose pair does not match, silently unless debug
+   is on. Table mirrors api/conversion.ts. */
+const OAIQ_DATA_TYPE: Record<string, string> = {
+  appointment_scheduled: 'customer_action',
+  checkout_started: 'contents',
+  contents_viewed: 'contents',
+  custom: 'custom',
+  items_added: 'contents',
+  lead_created: 'customer_action',
+  order_created: 'contents',
+  page_viewed: 'contents',
+  registration_completed: 'customer_action',
+  subscription_created: 'plan_enrollment',
+  trial_started: 'plan_enrollment',
+};
+
+document.querySelectorAll<HTMLElement>('[data-oaiq]').forEach((el) => {
+  const event = el.dataset.oaiq;
+  const dataType = event && OAIQ_DATA_TYPE[event];
+  if (!dataType) return;
+  el.addEventListener(
+    'click',
+    () => {
+      if (typeof window.oaiq === 'function') window.oaiq('measure', event, { type: dataType });
+    },
+    { passive: true }
+  );
+});
+
 /* ── WORK TOGGLE ── */
 const wtog = document.getElementById('wtog');
 if (wtog) {
