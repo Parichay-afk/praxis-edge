@@ -51,7 +51,9 @@ if (cv) {
   const heroEl = cv.parentElement as HTMLElement;
   let W = 0,
     H = 0;
-  const pts = Array.from({ length: 80 }, () => ({
+  // Phones get fewer particles: the loop competes with first paint on a 4x-slower CPU.
+  const PARTICLES = window.matchMedia('(max-width: 768px)').matches ? 32 : 80;
+  const pts = Array.from({ length: PARTICLES }, () => ({
     x: 0,
     y: 0,
     r: Math.random() * 2 + 0.4,
@@ -60,11 +62,14 @@ if (cv) {
     a: Math.random() * 0.45 + 0.08,
   }));
   function resizeCanvas() {
+    const pw = W, ph = H;
     W = cv!.width = heroEl.offsetWidth;
     H = cv!.height = heroEl.offsetHeight;
+    // Scale existing positions rather than reseeding: on phones the address bar
+    // showing/hiding fires resize during scroll, and reseeding made every particle jump.
     pts.forEach((p) => {
-      p.x = Math.random() * W;
-      p.y = Math.random() * H;
+      p.x = pw ? (p.x / pw) * W : Math.random() * W;
+      p.y = ph ? (p.y / ph) * H : Math.random() * H;
     });
   }
   resizeCanvas();
@@ -99,9 +104,34 @@ if (cv) {
       ctx.fillStyle = g;
       ctx.fill();
     });
-    requestAnimationFrame(drawCanvas);
+    if (heroVisible) rafId = requestAnimationFrame(drawCanvas);
   }
-  if (!reducedMotion) drawCanvas();
+  // Draw only while the hero is on screen, and don't start until the page has
+  // painted and the main thread is idle — the animation is decoration and must
+  // not sit in front of first paint / LCP.
+  let heroVisible = true;
+  let rafId = 0;
+  function startCanvas() {
+    if (reducedMotion) return;
+    new IntersectionObserver(
+      ([e]) => {
+        heroVisible = e.isIntersecting;
+        if (heroVisible && !rafId) rafId = requestAnimationFrame(drawCanvas);
+        if (!heroVisible) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      },
+      { threshold: 0 }
+    ).observe(heroEl);
+    rafId = requestAnimationFrame(drawCanvas);
+  }
+  const idle = (cb: () => void) =>
+    'requestIdleCallback' in window
+      ? (window as Window & { requestIdleCallback: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback(cb, { timeout: 2000 })
+      : setTimeout(cb, 1200);
+  if (document.readyState === 'complete') idle(startCanvas);
+  else window.addEventListener('load', () => idle(startCanvas), { once: true });
 }
 
 /* ── TYPEWRITER ── */
@@ -232,8 +262,16 @@ function onScroll() {
     });
   });
 }
-window.addEventListener('scroll', onScroll, { passive: true });
-window.addEventListener('resize', onScroll, { passive: true });
+let scrollRaf = 0;
+const onScrollRaf = () => {
+  if (scrollRaf) return;
+  scrollRaf = requestAnimationFrame(() => {
+    scrollRaf = 0;
+    onScroll();
+  });
+};
+window.addEventListener('scroll', onScrollRaf, { passive: true });
+window.addEventListener('resize', onScrollRaf, { passive: true });
 onScroll();
 
 /* ── PIXEL EVENTS ──
