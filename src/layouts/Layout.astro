@@ -103,12 +103,10 @@ const orgJsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
     <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&family=DM+Serif+Display:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts are self-hosted (see global.css); preload the three that paint above the fold -->
+    <link rel="preload" href="/fonts/DMSerifDisplay-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/PlusJakartaSans-800.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/PlusJakartaSans-700.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Google tag (gtag.js) — consent-gated -->
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`}></script>

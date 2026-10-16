@@ -15,6 +15,6 @@ export default defineConfig({
   ],
   build: {
     assets: 'assets',
-    inlineStylesheets: 'auto',
+    inlineStylesheets: 'always', // one stylesheet, two pages: inlining removes the last render-blocking fetch
   },
 });

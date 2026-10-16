@@ -106,7 +106,12 @@ if (cv) {
 
 /* ── TYPEWRITER ── */
 const twEl = document.getElementById('tw');
-if (twEl && !reducedMotion) {
+// Desktop only. On a phone this span is the page's largest text block, and
+// Chrome re-stamps a text element's LCP time every time its content changes,
+// so a running typewriter pushes mobile LCP out to ~5s. On desktop the static
+// part of the H1 is the largest block, so the animation is free there.
+const wideScreen = window.matchMedia('(min-width: 769px)').matches;
+if (twEl && !reducedMotion && wideScreen) {
   const words = [
     'deserves.',
     'has been waiting for.',
