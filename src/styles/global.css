@@ -316,7 +316,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba
 .ct-l p { font-size: 16px; color: rgba(255,255,255,.7); line-height: 1.75; font-weight: 300; margin-bottom: 26px; margin-top: 16px; }
 .ct-em { display: block; font-size: 17px; font-weight: 700; color: var(--vl); margin-bottom: 4px; transition: color .2s; }
 .ct-em:hover { color: #fff; text-decoration: underline; }
-.ct-lo { font-size: 12px; color: rgba(255,255,255,.38); letter-spacing: .06em; }
+.ct-lo { font-size: 12px; color: rgba(255,255,255,.55); letter-spacing: .06em; }
 .form { display: flex; flex-direction: column; gap: 12px; }
 .fr { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .fi { display: flex; flex-direction: column; gap: 5px; }
@@ -340,11 +340,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba
 /* ── FOOTER ── */
 footer { background: #0c0c18; padding: 36px 6%; border-top: 1px solid rgba(255,255,255,.07); }
 .fi-w { max-width: 1140px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
-.fsub { font-size: 11px; color: rgba(255,255,255,.42); margin-top: 3px; font-weight: 300; }
+.fsub { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 3px; font-weight: 300; }
 .fls { display: flex; gap: 22px; flex-wrap: wrap; }
 .fls a { font-size: 12px; color: rgba(255,255,255,.58); letter-spacing: .04em; transition: color .2s; }
 .fls a:hover { color: var(--gold); }
-.fcp { font-size: 11px; color: rgba(255,255,255,.38); }
+.fcp { font-size: 11px; color: rgba(255,255,255,.55); }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
