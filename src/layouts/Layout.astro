@@ -8,6 +8,8 @@ type Props = {
   canonical?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** Emit the FAQPage schema. Off for pages that don't show the FAQ (e.g. 404). */
+  faq?: boolean;
 };
 
 const {
@@ -16,6 +18,7 @@ const {
   canonical = Astro.url.href,
   ogImage = `${site.url}/og-image.png`,
   noindex = false,
+  faq = true,
 } = Astro.props;
 
 const faqJsonLd = {
@@ -101,7 +104,7 @@ const orgJsonLd = {
     <meta name="twitter:image" content={ogImage} />
 
     <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
-    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+    {faq && <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />}
 
     <!-- Fonts are self-hosted (see global.css); preload the three that paint above the fold -->
     <link rel="preload" href="/fonts/DMSerifDisplay-400.woff2" as="font" type="font/woff2" crossorigin />

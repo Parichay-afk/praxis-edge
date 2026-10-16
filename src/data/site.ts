@@ -1,6 +1,6 @@
 export const site = {
   name: 'Praxis Edge',
-  url: 'https://praxis-edge.com',
+  url: 'https://www.praxis-edge.com',
   description:
     'The integrated education marketing and campus design partner for institutions across the UAE and MENA. Brand strategy, enrollment marketing, and campus environments under one roof.',
   email: 'hello@praxisadvertising.com',

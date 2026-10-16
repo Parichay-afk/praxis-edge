@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://praxis-edge.com',
+  site: 'https://www.praxis-edge.com',
   trailingSlash: 'ignore',
   output: 'static',
   integrations: [
