@@ -527,3 +527,4 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .vplay[hidden]{display:none}
 .vplay svg{width:30px;height:30px}
 .dv-scroll > :first-child{margin-top:auto}
+.tu-logos{grid-template-columns:repeat(7,1fr);gap:8px}

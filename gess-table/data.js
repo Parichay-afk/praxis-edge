@@ -60,11 +60,16 @@ window.EDGE = {
     start: { name: "Star International School Al Twar", logo: "start" },
     waad: { name: "GEMS World Academy, Abu Dhabi", logo: "waad" },
     sun: { name: "Sunmarke School", logo: "sun" },
-    dbsj: { name: "Dubai British School Jumeira", logo: "dbsj" }
+    dbsj: { name: "Dubai British School Jumeira", logo: "dbsj" },
+    gaa: { name: "GEMS American Academy, Abu Dhabi", logo: "gaa" },
+    regent: { name: "Regent International School", logo: "regent" },
+    imt: { name: "IMT Dubai", logo: "imt" },
+    buid: { name: "The British University in Dubai", logo: "buid" },
+    arbor: { name: "The Arbor School", logo: "arbor" }
   },
   /* the home ticker: every brand on the Schools screen plus the rest of the website's logo strip.
      Ordered so GEMS schools are spread out and look-alike logos never sit together. */
-  ticker: ["gwa", "jc", "nms", "bits", "wak", "kenzi", "sri", "starm", "gma", "dbsj", "grd", "gfp", "acer", "tms", "sun", "wso", "cfd", "daa", "arc", "gls", "gisk", "iim", "waad", "efi", "gms", "start", "gfs", "drmi", "wis", "gabn", "sais", "gooe"],
+  ticker: ["gwa", "jc", "nms", "buid", "wak", "kenzi", "sri", "regent", "gma", "starm", "daa", "dbsj", "grd", "imt", "tms", "acer", "gfp", "sun", "wso", "arbor", "gls", "cfd", "waad", "iim", "gisk", "bits", "gms", "start", "gfs", "efi", "wis", "arc", "gabn", "drmi", "gaa", "sais", "gooe"],
   /* Schools screen grid (6 across): checkerboard, so no two GEMS logos touch */
   logoWall: ["gwa", "jc", "nms", "bits", "wak", "kenzi",
              "starm", "sri", "acer", "gma", "sun", "daa",

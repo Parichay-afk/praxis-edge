@@ -1,7 +1,7 @@
 /* Offline cache. Once the table has loaded on a connection it keeps working with no internet.
    App files (html, js, css, json) check the network first so updates show up on the next reload;
    photos, logos, fonts and video come straight from the cache. */
-const V = "edge-gess-v8";
+const V = "edge-gess-v9";
 const SHELL = /(\/|\.html|\.js|\.css|\.json|\.webmanifest)$/;
 
 self.addEventListener("install", e => {
