@@ -7,6 +7,7 @@
   const stage = $("#stage"), screensEl = $("#screens"), bar = $("#bar"), rail = $("#rail"), tray = $("#tray"), overlay = $("#overlay");
   const ink = $("#ink"), penbar = $("#penbar"), ctx = ink.getContext("2d");
   const IMG = n => "img/image" + n + ".jpg";
+  const TH = n => "img/t/image" + n + ".jpg";   /* 720px copies for grids, strips and thumbnails */
   const IDLE_MS = 240000, COUNTDOWN = 12;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -144,7 +145,7 @@
     screensEl.appendChild(el);
     const old = current; current = el;
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("on")));
-    if (old) { old.classList.remove("on"); setTimeout(() => old.remove(), 500); }
+    if (old) { old.classList.remove("on"); setTimeout(() => old.remove(), 280); }
     hideKb(); clearInk(); setPen(false);
     renderBar(); renderRail(); refreshSaveBtns();
     attractFlipTimer(name === "attract");
@@ -157,11 +158,7 @@
     const ctxBits = [typeLabel()].concat(D.needs.filter(n => S.needs.has(n.id)).map(n => n.label)).filter(Boolean);
     bar.innerHTML = `
       <div class="logo-hit" id="logoHit"><img class="logo" src="brand/logo.png" alt="Praxis Edge"></div>
-      <button class="ctx" data-act="hello">${ctxBits.length ? `<span class="ctx-l">Talking with</span>${ctxBits.slice(0, 3).map(b => `<span class="ctx-c">${esc(b)}</span>`).join("")}${ctxBits.length > 3 ? `<span class="ctx-c">+${ctxBits.length - 3}</span>` : ""}` : `<span class="ctx-l">New conversation</span><span class="ctx-c ghost">Tell us about your school</span>`}</button>
-      <button class="bbtn pen ${penOn ? "on" : ""}" data-act="pen">${I.pen}${penOn ? "Drawing" : "Draw"}</button>
-      <button class="bbtn" data-act="flip">${I.flip}Flip</button>
-      <button class="bbtn" data-act="restart">${I.restart}New conversation</button>`;
-    hookAdmin($("#logoHit"));
+      <div class="ctx">${ctxBits.length ? `<span class="ctx-l">Talking with</span>${ctxBits.slice(0, 3).map(b => `<span class="ctx-c">${esc(b)}</span>`).join("")}${ctxBits.length > 3 ? `<span class="ctx-c">+${ctxBits.length - 3}</span>` : ""}` : `<span class="ctx-l">New conversation</span><span class="ctx-c ghost">Tell us about your school</span>`}</div>`;
   }
 
   /* ---------------- left rail ---------------- */
@@ -174,20 +171,25 @@
   }
   function renderRail() {
     const act = railActive();
-    rail.innerHTML = `<div class="r-list">${RAIL.map(([id, label], i) => {
+    rail.innerHTML = `<div class="r-qr"><img src="brand/qr.svg" alt=""><span>Scan for<br><b>${D.qrUrl}</b></span></div>
+      <div class="r-list">${RAIL.map(([id, label], i) => {
         const d = div(id), sug = S.suggested.has(id);
         return `<button class="ritem ${act === id ? "on" : ""}" data-act="nav" data-id="${id}">
           <span class="rn">0${i + 1}</span><span class="rl">${label}</span>
           ${d ? `<span class="rsw" style="background:${COLORS[d.color]}"></span>` : ""}${sug ? `<span class="rsug">Suggested</span>` : ""}</button>`;
       }).join("")}</div>
-      <div class="r-qr"><img src="brand/qr.svg" alt=""><span>Scan for<br><b>${D.qrUrl}</b></span></div>`;
+      <div class="r-ctl">
+        <button class="rbtn pen ${penOn ? "on" : ""}" data-act="pen">${I.pen}<span>${penOn ? "Drawing" : "Draw"}</span></button>
+        <button class="rbtn" data-act="flip">${I.flip}<span>Flip</span></button>
+        <button class="rbtn" data-act="restart">${I.restart}<span>Home</span></button>
+      </div>`;
   }
 
   /* ---------------- screens ---------------- */
   function vAttract(el) {
     const pics = [2, 92, 69, 132, 34, 141, 83, 167, 44, 113, 57, 124];
     const colA = pics.filter((_, i) => i % 2 === 0), colB = pics.filter((_, i) => i % 2);
-    const col = arr => arr.concat(arr).map(n => `<img src="${IMG(n)}" alt="">`).join("");
+    const col = arr => arr.concat(arr).map(n => `<img src="${TH(n)}" alt="" decoding="async">`).join("");
     el.innerHTML = `
       <div class="doodle"></div>
       <div class="mosaic"><div class="mcol">${col(colA)}</div><div class="mcol">${col(colB)}</div></div>
@@ -209,11 +211,11 @@
         <div class="hello-l">
           <span class="eyebrow">Let’s talk</span>
           <h2 class="h-l">Tell us about your school</h2>
-          <button class="hello-tour" data-act="nav" data-id="tour"><span class="diamond"></span><span><b>Not sure yet?</b> Start with a two-minute tour of what we do</span>${I.arrow}</button>
           <div class="sec"><h4>Who are we talking to?</h4>
             <div class="types">${D.types.map(t => `<button class="ttile ${S.type === t.id ? "sel" : ""}" data-act="type" data-id="${t.id}"><span class="ti">${ICO[t.id]}</span><b>${t.label}</b><small>${t.note}</small></button>`).join("")}</div></div>
           <div class="sec"><h4>What is on your mind this year?</h4>
             <div class="needs">${D.needs.map(n => `<button class="nchip ${S.needs.has(n.id) ? "sel" : ""}" data-act="need" data-id="${n.id}"><span class="nb">${I.check}</span>${n.label}</button>`).join("")}</div></div>
+          <button class="hello-tour" data-act="nav" data-id="tour"><span class="diamond"></span><span><b>Not sure yet?</b> Start with a two-minute tour of what we do</span>${I.arrow}</button>
         </div>
         <div class="hello-r" id="startCol"></div>
       </div>`;
@@ -254,7 +256,7 @@
             <div class="stat"><b>1 partner</b><span>design, production and installation, end to end</span></div>
           </div>
         </div>
-        <div class="tu-pics"><img src="${IMG(2)}" alt=""><img src="${IMG(92)}" alt=""><img src="${IMG(69)}" alt=""></div>
+        <div class="tu-pics"><img src="${TH(2)}" alt="" decoding="async"><img src="${TH(92)}" alt="" decoding="async"><img src="${TH(69)}" alt="" decoding="async"></div>
       </div>`;
     if (n === 1) body = `
       <h2 class="h-l">Four ways we help a school grow</h2>
@@ -286,22 +288,22 @@
         ["Deliver", "We produce, install and launch it, managing every detail on site."]].map((x, k) =>
         `<div class="tu-step"><span class="sn">0${k + 1}</span><b>${x[0]}</b><span>${x[1]}</span></div>`).join("")}</div>
       <div class="tu-inhouse"><span class="diamond"></span>Design, production and installation, all under one roof</div>
-      <div class="tu-band">${[34, 44, 83, 167].map(x => `<img src="${IMG(x)}" alt="">`).join("")}</div>`;
+      <div class="tu-band">${[34, 44, 83, 167].map(x => `<img src="${TH(x)}" alt="" decoding="async">`).join("")}</div>`;
     if (n === 4) body = `
       <h2 class="h-l">Where would you like to go from here?</h2>
+      <div class="tu-qr"><img src="brand/qr.svg" alt=""><span>Or scan to keep exploring at <b>${D.qrUrl}</b></span></div>
       <div class="tu-next">
         <button class="tu-opt sun" data-act="tour-email"><b>Email me this overview</b><span>What we do, with links to the work, sent to your inbox.</span><i>${I.send}</i></button>
         <button class="tu-opt" data-act="hello"><b>Talk about my school</b><span>A few quick questions and we will show you what fits.</span><i>${I.arrow}</i></button>
         <button class="tu-opt" data-act="nav" data-id="spaces"><b>Look around the work</b><span>${pairs} campus before and afters, room by room.</span><i>${I.arrow}</i></button>
-      </div>
-      <div class="tu-qr"><img src="brand/qr.svg" alt=""><span>Or scan to keep exploring at <b>${D.qrUrl}</b></span></div>`;
+      </div>`;
     el.innerHTML = `<div class="tour">
-        <div class="tu-head"><span class="eyebrow">Meet Praxis Edge</span>
-          <div class="tu-nav">${TOUR.map((t, k) => `<button class="tn ${k === n ? "on" : ""} ${k < n ? "done" : ""}" data-act="tstep" data-id="${k}"><span>0${k + 1}</span>${t}</button>`).join("")}</div></div>
+        <div class="tu-head"><span class="eyebrow">Meet Praxis Edge</span></div>
         <div class="tu-body stag">${body}</div>
         <div class="tu-foot">
-          ${n > 0 ? `<button class="big-btn ghost" data-act="tstep" data-id="${n - 1}">${I.back}Back</button>` : `<span></span>`}
-          ${n < TOUR.length - 1 ? `<button class="big-btn" data-act="tstep" data-id="${n + 1}">Next: ${TOUR[n + 1]}${I.arrow}</button>` : `<span></span>`}
+          ${n > 0 ? `<button class="big-btn ghost" data-act="tstep" data-id="${n - 1}">${I.back}Back</button>` : `<span class="tu-sp"></span>`}
+          <div class="tu-nav">${TOUR.map((t, k) => `<button class="tn ${k === n ? "on" : ""} ${k < n ? "done" : ""}" data-act="tstep" data-id="${k}"><span>0${k + 1}</span>${t}</button>`).join("")}</div>
+          ${n < TOUR.length - 1 ? `<button class="big-btn" data-act="tstep" data-id="${n + 1}">Next${I.arrow}</button>` : `<span class="tu-sp"></span>`}
         </div></div>`;
     /* swipe left or right to move through the tour */
     let sx = null;
@@ -315,15 +317,14 @@
   function vSpaces(el) {
     const d = div("spaces");
     el.innerHTML = `
-      <div class="phead"><div><span class="eyebrow">Campus Design</span><h2 class="h-l">Which space shall we look at?</h2></div>
-        ${saveBtn({ key: "div:spaces", group: "Service", title: d.name, sub: d.plan, color: COLORS[d.color] }, "Save Campus Design")}</div>
+      <div class="phead"><div><span class="eyebrow">Campus Design</span><h2 class="h-l">Which space shall we look at?</h2></div></div>
       <div class="sp-grid stag">
         ${orderedSpaces().map(s => `<button class="sp" data-act="space" data-id="${s.id}">
-          <img src="${IMG(s.cover)}" alt="">
+          <img src="${TH(s.cover)}" alt="" decoding="async">
           ${spaceSchools(s).length ? `<span class="minis">${spaceSchools(s).filter(id => logoImg(id)).slice(0, 3).map(id => logoImg(id)).join("")}</span>` : ""}
           <span class="cap"><b>${s.name}</b><span>${s.pairs.length} before and afters</span></span></button>`).join("")}
       </div>
-      ${askHtml(d)}`;
+      <div class="sp-foot">${askHtml(d)}${saveBtn({ key: "div:spaces", group: "Service", title: d.name, sub: d.plan, color: COLORS[d.color] }, "Save Campus Design")}</div>`;
   }
   function askHtml(d) {
     return d.ask ? `<div class="ask"><span class="ask-l">Ask</span>${d.ask.map(q => `<span class="ask-q">${q}</span>`).join("")}</div>` : "";
@@ -334,18 +335,16 @@
     let i = Math.max(0, Math.min(list.length - 1, +idx || 0));
     el.innerHTML = `
       <div class="vhead">
-        <button class="sq" data-act="spaces" title="All spaces">${I.grid}</button>
         <div class="vt"><span class="eyebrow">Campus Design</span><h2>${s.name}</h2></div>
-        <span class="pg" id="pg"></span>
-        <button class="sq" data-act="vprev">${I.back}</button><button class="sq" data-act="vnext">${I.next}</button>
       </div>
       <div class="compare" id="cmp"></div>
       <div class="vinfo">
+        <div class="vnav"><button class="sq" data-act="spaces" title="All spaces">${I.grid}</button><button class="sq" data-act="vprev">${I.back}</button><span class="pg" id="pg"></span><button class="sq" data-act="vnext">${I.next}</button></div>
         <div class="credit" id="credit"></div>
         <div id="vsave"></div>
       </div>
       <div class="strip scroll-x" id="strip">
-        ${list.map((it, k) => `<button data-act="vgo" data-i="${k}"><img src="${it.kind === "video" ? it.poster : IMG(it.a)}" alt="" loading="lazy">${it.kind === "pair" ? "" : `<span class="k">${it.kind === "video" ? "VIDEO" : "PHOTO"}</span>`}</button>`).join("")}
+        ${list.map((it, k) => `<button data-act="vgo" data-i="${k}"><img src="${it.kind === "video" ? it.poster : TH(it.a)}" alt="" decoding="async">${it.kind === "pair" ? "" : `<span class="k">${it.kind === "video" ? "VIDEO" : "PHOTO"}</span>`}</button>`).join("")}
       </div>`;
     const cmp = $("#cmp", el);
     let x = 50, touched = false, sweepRaf;
@@ -375,7 +374,7 @@
       const cid = it.a ? D.credit[it.a] : (it.school || null), school = cid ? D.schools[cid] : null;
       const cr = $("#credit", el);
       cr.innerHTML = school ? `${school.logo ? `<span class="cl">${logoImg(cid)}</span>` : ""}<span class="cn"><small>Project for</small>${esc(school.name)}</span>${quoteHtml(cid)}` : `<span class="cn"><small>${esc(s.name)}</small>${esc(s.blurb)}</span>`;
-      const thumbSrc = it.kind === "video" ? it.poster : IMG(it.a);
+      const thumbSrc = it.kind === "video" ? it.poster : TH(it.a);
       $("#vsave", el).innerHTML = saveBtn({ key: `space:${id}:${it.a || "video"}`, group: "Campus Design · " + s.name, title: school ? `${s.name} like ${school.name.replace(/^GEMS /, "")}` : `${s.name} idea`, sub: s.blurb, img: thumbSrc, client: school ? school.name : "" }, "Save this example");
       S.route = "space:" + id + ":" + i;
     }
@@ -465,26 +464,26 @@
     sel = sel || "gwa";
     el.innerHTML = `
       <div class="phead"><div><span class="eyebrow">Proof</span><h2 class="h-l">Schools we work with</h2></div><p class="lead" style="max-width:460px;text-align:right">Tap a logo to see what we did for them.</p></div>
-      <div class="lgrid">${D.logoWall.map(id => `<button class="lt ${id === sel ? "sel" : ""}" data-act="school" data-id="${id}">${logoOrName(id)}</button>`).join("")}</div>
-      <div class="spanel" id="spanel"></div>`;
+      <div class="spanel" id="spanel"></div>
+      <div class="lgrid">${D.logoWall.map(id => `<button class="lt ${id === sel ? "sel" : ""}" data-act="school" data-id="${id}">${logoOrName(id)}</button>`).join("")}</div>`;
     renderSchool(el, sel);
   }
   function renderSchool(el, sid) {
     const p = $("#spanel", el), s = D.schools[sid], proj = schoolProjects(sid), list = (D.projects && D.projects[sid]) || [];
     $$(".lt", el).forEach(b => b.classList.toggle("sel", b.dataset.id === sid));
     const caseFor = (list.find(x => x.caseFor) || {}).caseFor;
-    const pjImg = pj => pj.a ? IMG(pj.a) : pj.poster;
+    const pjImg = pj => pj.a ? TH(pj.a) : pj.poster;
     const firstImg = proj.length ? pjImg(proj[0]) : (sid === "iim" ? div("enrolment").cases[0].gallery[0] : "");
-    p.innerHTML = `<div class="sp-l scroll-y"><span class="eyebrow">${esc(s.name)}</span>
+    p.innerHTML = `<div class="sp-l"><div class="sp-body scroll-y"><span class="eyebrow">${esc(s.name)}</span>
         ${list.map((x, k) => `<div class="proj">
           <h3>${esc(x.title)}</h3>
-          <div class="prow">${saveBtn({ key: "proj:" + sid + ":" + k, group: "Project \u00b7 " + s.name, title: x.title, sub: x.summary, client: s.name, img: k === 0 ? firstImg : "", color: "#EEE9FC" }, "Save this project")}
-          ${caseFor ? `<button class="big-btn ghost" data-act="nav" data-id="${caseFor}">Case study ${I.arrow}</button>` : ""}</div>
           <p>${esc(x.summary)}</p>
           ${x.stat ? `<div class="pstat"><b>${esc(x.stat[0])}</b><span>${esc(x.stat[1])}</span></div>` : ""}
           ${x.scope ? `<div class="scope">${x.scope.map(c => `<span>${esc(c)}</span>`).join("")}</div>` : ""}
         </div>`).join("")}
         ${quoteHtml(sid)}</div>
+        ${list.length ? `<div class="prow">${list.map((x, k) => saveBtn({ key: "proj:" + sid + ":" + k, group: "Project \u00b7 " + s.name, title: x.title, sub: x.summary, client: s.name, img: k === 0 ? firstImg : "", color: "#EEE9FC" }, list.length > 1 ? "Save project " + (k + 1) : "Save this project")).join("")}
+          ${caseFor ? `<button class="big-btn ghost" data-act="nav" data-id="${caseFor}">Case study ${I.arrow}</button>` : ""}</div>` : ""}</div>
       <div class="sp-r scroll-x">${proj.map(pj => `<button class="pj" data-act="openproj" data-space="${pj.space}" data-i="${pj.i}"><img src="${pjImg(pj)}" alt=""><span>${pj.name}</span></button>`).join("") || `<div class="pj-empty">${logoImg(sid, "pj-logo")}<span>Photos from this project are not on the table yet. Ask us to show you more.</span></div>`}</div>`;
     refreshSaveBtns();
   }
@@ -700,9 +699,9 @@
       ${Object.keys(TOOLS).map(t => `<button class="pb-c ${t} ${t === penTool ? "on" : ""}" data-act="tool" data-id="${t}"><i style="background:${TOOLS[t].c}"></i>${t === "glow" ? "Highlight" : t === "ink" ? "Purple" : "Coral"}</button>`).join("")}
       <button class="pb-b" data-act="undo">${I.undo}Undo</button><button class="pb-b" data-act="clearink">${I.trash}Clear</button>
       <button class="pb-b done" data-act="pen">${I.check}Done</button>` : "";
-    const pb = $(".bbtn.pen", bar); if (pb) { pb.classList.toggle("on", v); pb.innerHTML = I.pen + (v ? "Drawing" : "Draw"); }
+    const pb = $(".rbtn.pen", rail); if (pb) { pb.classList.toggle("on", v); pb.innerHTML = I.pen + `<span>${v ? "Drawing" : "Draw"}</span>`; }
   }
-  function clearInk() { strokes = []; live = {}; ctx.clearRect(0, 0, ink.width, ink.height); }
+  function clearInk() { strokes = []; live = {}; ctx.clearRect(0, 0, ink.width, ink.height); stage.classList.remove("inked"); }
   function drawStroke(s) {
     const t = TOOLS[s.tool]; if (s.pts.length < 1) return;
     ctx.save(); ctx.globalAlpha = t.a; ctx.strokeStyle = t.c; ctx.lineWidth = t.w; ctx.lineCap = "round"; ctx.lineJoin = "round";
@@ -715,7 +714,7 @@
   const inkPt = e => { const p = toStage(e); return [p.x, p.y - 88]; };
   ink.addEventListener("pointerdown", e => { if (!penOn) return; ink.setPointerCapture(e.pointerId); live[e.pointerId] = { tool: penTool, pts: [inkPt(e)] }; poke(); });
   ink.addEventListener("pointermove", e => { const s = live[e.pointerId]; if (!s) return; s.pts.push(inkPt(e)); redraw(); });
-  const endInk = e => { const s = live[e.pointerId]; if (!s) return; delete live[e.pointerId]; if (s.pts.length === 1) s.pts.push([s.pts[0][0] + .1, s.pts[0][1]]); strokes.push(s); redraw(); };
+  const endInk = e => { const s = live[e.pointerId]; if (!s) return; delete live[e.pointerId]; if (s.pts.length === 1) s.pts.push([s.pts[0][0] + .1, s.pts[0][1]]); strokes.push(s); redraw(); stage.classList.add("inked"); };
   ink.addEventListener("pointerup", endInk); ink.addEventListener("pointercancel", endInk);
 
   /* ---------------- actions ---------------- */
@@ -800,13 +799,15 @@
   let afT = null;
   function attractFlipTimer(on) { clearInterval(afT); if (on) afT = setInterval(() => setFlip(!S.flipped), 20000); }
 
-  /* ---------------- staff panel (hold the logo 3 seconds) ---------------- */
-  function hookAdmin(el) {
-    if (!el) return;
-    let t;
-    el.addEventListener("pointerdown", () => { t = setTimeout(adminPanel, 3000); });
-    ["pointerup", "pointerleave", "pointercancel"].forEach(ev => el.addEventListener(ev, () => clearTimeout(t)));
+  /* ---------------- staff panel ----------------
+     No touch gesture opens it, so visitors can never bring it up by accident.
+     Staff open it on the table's browser with the address ending in #staff. */
+  function staffFromUrl() {
+    if (location.hash !== "#staff") return;
+    history.replaceState(null, "", location.pathname + location.search);
+    setTimeout(adminPanel, 300);
   }
+  addEventListener("hashchange", staffFromUrl);
   function csv(rows) {
     const cols = ["time", "name", "email", "institution", "role", "type", "challenges", "plan", "note", "consent", "status"];
     const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
@@ -852,6 +853,6 @@
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") wake(); });
   if ("serviceWorker" in navigator && /^https:|localhost/.test(location.href)) navigator.serviceWorker.register("sw.js").catch(() => {});
 
-  fit(); wake(); renderTray(); go("attract", { noHist: true }); setTimeout(flush, 5000);
+  fit(); wake(); renderTray(); go("attract", { noHist: true }); setTimeout(flush, 5000); staffFromUrl();
   window.__edge = { go, S, reset, setFlip, setPen, submit, getJ };
 })();
