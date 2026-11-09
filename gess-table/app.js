@@ -81,7 +81,10 @@
   }
   function schoolProjects(sid) {
     const out = [];
-    D.spaces.forEach(s => items(s).forEach((it, i) => { if (it.a && D.credit[it.a] === sid) out.push({ space: s.id, i, a: it.a, name: s.name }); }));
+    D.spaces.forEach(s => items(s).forEach((it, i) => {
+      if (it.a && D.credit[it.a] === sid) out.push({ space: s.id, i, a: it.a, name: s.name });
+      else if (it.kind === "video" && it.school === sid) out.push({ space: s.id, i, a: null, poster: it.poster, name: s.name + " video" });
+    }));
     return out;
   }
   function recomputeSuggested() {
@@ -384,7 +387,8 @@
     const p = $("#spanel", el), s = D.schools[sid], proj = schoolProjects(sid), list = (D.projects && D.projects[sid]) || [];
     $$(".lt", el).forEach(b => b.classList.toggle("sel", b.dataset.id === sid));
     const caseFor = (list.find(x => x.caseFor) || {}).caseFor;
-    const firstImg = proj.length ? IMG(proj[0].a) : (sid === "iim" ? div("enrolment").cases[0].gallery[0] : "");
+    const pjImg = pj => pj.a ? IMG(pj.a) : pj.poster;
+    const firstImg = proj.length ? pjImg(proj[0]) : (sid === "iim" ? div("enrolment").cases[0].gallery[0] : "");
     p.innerHTML = `<div class="sp-l scroll-y"><span class="eyebrow">${esc(s.name)}</span>
         ${list.map((x, k) => `<div class="proj">
           <h3>${esc(x.title)}</h3>
@@ -395,7 +399,7 @@
           ${x.scope ? `<div class="scope">${x.scope.map(c => `<span>${esc(c)}</span>`).join("")}</div>` : ""}
         </div>`).join("")}
         ${quoteHtml(sid)}</div>
-      <div class="sp-r scroll-x">${proj.map(pj => `<button class="pj" data-act="openproj" data-space="${pj.space}" data-i="${pj.i}"><img src="${IMG(pj.a)}" alt=""><span>${pj.name}</span></button>`).join("") || `<div class="pj-empty">${logoImg(sid, "pj-logo")}<span>Photos from this project are not on the table yet. Ask us to show you more.</span></div>`}</div>`;
+      <div class="sp-r scroll-x">${proj.map(pj => `<button class="pj" data-act="openproj" data-space="${pj.space}" data-i="${pj.i}"><img src="${pjImg(pj)}" alt=""><span>${pj.name}</span></button>`).join("") || `<div class="pj-empty">${logoImg(sid, "pj-logo")}<span>Photos from this project are not on the table yet. Ask us to show you more.</span></div>`}</div>`;
     refreshSaveBtns();
   }
 
@@ -434,7 +438,7 @@
     el.innerHTML = `<div class="sent">
       <span class="tag">${mode === "queued" ? "Saved, sending soon" : "Plan sent"}</span>
       <h2 class="h-xl">Thank you${first ? ", " + first : ""}.</h2>
-      <p class="lead">${mode === "queued" ? "We are offline for a moment. Your plan is saved and will send automatically as soon as we reconnect." : `Your plan is on its way to <b>${esc(S.lastEmail || "")}</b>. Reply to it any time and we will pick up where we left off.`}</p>
+      <p class="lead">${mode === "queued" ? "We are offline for a moment. Your plan is saved and will send automatically as soon as we reconnect." : `Your plan is on its way to <b>${esc(S.lastEmail || "")}</b>. It has a link to book a follow-up call, or just reply and we will pick up where we left off.`}</p>
       <img class="qr" src="brand/qr.svg" alt=""><p class="lead small">Scan to keep exploring at ${D.qrUrl}</p>
       <button class="big-btn" data-act="restart-now">Start a new conversation</button></div>`;
     clearTimeout(vSent.t); vSent.t = setTimeout(() => { if ((S.route || "").startsWith("sent")) reset(); }, 30000);
@@ -488,7 +492,7 @@
       itemsOut.push(o);
     }
     const lg = await logoB64(); if (lg) images.push({ cid: "pxe-logo", data: lg });
-    return { id: job.id, token: D.sendToken, name: job.name, email: job.email, school: job.school, role: job.role, note: job.note, items: itemsOut, images };
+    return { id: job.id, token: D.sendToken, name: job.name, email: job.email, school: job.school, role: job.role, note: job.note, type: job.type || "", challenges: job.challenges || "", consent: job.consent || "", items: itemsOut, images };
   }
   async function post(job) {
     const payload = await buildPayload(job);
@@ -524,7 +528,8 @@
     const job = {
       id: "gess-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7), time: new Date().toISOString(),
       name: f.name.trim(), email: f.email.trim(), school: f.school.trim(), role: f.role.trim(), note: f.note.trim(),
-      items: S.plan.map(p => ({ group: p.group, title: p.title, sub: p.sub, client: p.client, color: p.color, img: p.img, link: linkFor(p.key) }))
+      items: S.plan.map(p => ({ group: p.group, title: p.title, sub: p.sub, client: p.client, color: p.color, img: p.img, link: linkFor(p.key) })),
+      type: typeLabel() || "", challenges: D.needs.filter(n => S.needs.has(n.id)).map(n => n.label).join("; "), consent: S.consent ? "yes" : "no"
     };
     const L = getJ(LS);
     L.push({ id: job.id, time: job.time, name: job.name, email: job.email, institution: job.school, role: job.role, type: typeLabel(),
@@ -688,7 +693,8 @@
   setInterval(() => {
     const name = (S.route || "").split(":")[0];
     if (name === "attract" || name === "sent" || modalEl) return;
-    if (Date.now() - last > IDLE_MS) idleModal();
+    const limit = S.plan.length || (S.form && (S.form.name || S.form.email)) ? IDLE_MS * 2 : IDLE_MS;
+    if (Date.now() - last > limit) idleModal();
   }, 1000);
   function idleModal() {
     let n = COUNTDOWN;

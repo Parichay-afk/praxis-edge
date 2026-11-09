@@ -22,7 +22,7 @@ window.EDGE = {
       tms: "the-millennium-school-dubai", gms: "gems-millennium-school-sharjah", gma: "gems-modern-academy",
       jc: "jumeirah-college", arc: "arcadia-british-school", acer: "australian-council-for-educational-research",
       iim: "iim-ahmedabad-dubai", cfd: "college-of-fashion-and-design", drmi: "digital-renaissance-music-institute",
-      kenzi: "kenzi-nursery-casablanca"
+      kenzi: "kenzi-nursery-casablanca", efi: "efi-al-jabr-dubai"
     }
   },
 
@@ -46,15 +46,39 @@ window.EDGE = {
     cfd: { name: "The College of Fashion & Design", logo: "cfd" },
     drmi: { name: "Digital Renaissance Music Institute", logo: "drmi" },
     kenzi: { name: "Kenzi Nursery, Casablanca" },
+    efi: { name: "EFI Al Jabr, Dubai" },
     starm: { name: "Star International School Mirdif" },
     start: { name: "Star International School Al Twar" },
     waad: { name: "GEMS World Academy, Abu Dhabi" },
     sun: { name: "Sunmarke School" }
   },
-  logoWall: ["gwa", "nms", "sri", "jc", "wis", "wak", "wso", "gma", "tms", "gms", "arc", "daa", "iim", "bits", "cfd", "drmi", "acer"],
+  logoWall: ["gwa", "nms", "sri", "jc", "wis", "wak", "wso", "gma", "tms", "gms", "arc", "daa", "iim", "bits", "cfd", "drmi", "acer", "waad", "starm", "start", "sun", "efi", "kenzi"],
 
   /* each school's project, from praxisadvertising.com and praxis-edge.com */
   projects: {
+    /* from praxis-edge.com/work */
+    "efi": [{ "title": "An Old Space Given New Life",
+      "summary": "HOLGED Group opened its first UAE school in a space that needed a fresh start. We redesigned the reception, created a French-inspired reading room, then gave each corridor, classroom and the clinic its own character.",
+      "stat": ["12", "rooms, each with its own story"],
+      "scope": ["Space planning", "Reception redesign", "Reading room", "Wayfinding", "Corridor branding", "Clinic branding", "Classroom graphics"] }],
+    "kenzi": [{ "title": "A New Nursery With a World Behind Every Door",
+      "summary": "HOLGED Group opened Kenzi, its newest nursery in Casablanca. We designed a distinct themed world for each space, from a Moroccan welcome wall at reception to a garden classroom, a Little Chefs kitchen and an art studio, and managed the installation on site.",
+      "stat": ["325 m²", "of wall graphics designed and installed"],
+      "scope": ["Concept design", "Reception branding", "Classroom murals", "Glass manifestation", "Production artwork", "Installation management"] }],
+    /* drafted from the November 2026 site photos */
+    "sun": [{ "title": "Four Classrooms Turned Into Tech Labs",
+      "summary": "We turned four standard classrooms at Sunmarke into specialist spaces: two esports arenas, an XR lab and a fintech room, each with its own large-format wall graphics.",
+      "stat": ["4", "classrooms turned into specialist labs"],
+      "scope": ["Esports arenas", "XR lab", "Fintech room", "Large-format wall graphics"] }],
+    "starm": [{ "title": "Values, STEAM and Emirati Trailblazers",
+      "summary": "At Star Mirdif we brought the school's vision and values into the main atrium, turned the maker space glass into a STEAM story and gave a science corridor a wall of Emirati trailblazers in science and AI.",
+      "scope": ["Atrium values wall", "Maker space glass", "Science corridor", "Early years atrium"] }],
+    "start": [{ "title": "Blank Corridors That Now Tell the School's Story",
+      "summary": "At Star Al Twar we turned two blank corridors into a wall on learning pathways and life competencies, and a community wall celebrating the families and students behind the school.",
+      "scope": ["USP wall", "Community wall"] }],
+    "waad": [{ "title": "Branded While the Building Was Still Going Up",
+      "summary": "While the campus was still being fitted out, we planned the walls that now tell GEMS World Academy Abu Dhabi's story: an IB pathway wall, and subject walls outside Food Technology and Resistant Materials.",
+      "scope": ["IB pathway wall", "Food Technology corridor", "Resistant Materials wall"] }],
     "gwa": [
       {
         "title": "Education for a Better World, on Every Wall",
