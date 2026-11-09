@@ -46,12 +46,23 @@ window.EDGE = {
     cfd: { name: "The College of Fashion & Design", logo: "cfd" },
     drmi: { name: "Digital Renaissance Music Institute", logo: "drmi" },
     kenzi: { name: "Kenzi Nursery, Casablanca", logo: "kenzi" },
+    /* also on the praxis-edge.com logo strip; ticker only, no project pages on the table */
+    gfp: { name: "GEMS FirstPoint School", logo: "gfp" },
+    grd: { name: "GEMS Royal Dubai School", logo: "grd" },
+    gabn: { name: "GEMS Al Barsha National School", logo: "gabn" },
+    gfs: { name: "GEMS Founders School", logo: "gfs" },
+    gls: { name: "GEMS Legacy School", logo: "gls" },
+    gooe: { name: "GEMS Our Own English High School", logo: "gooe" },
+    gisk: { name: "GEMS International School Al Khail", logo: "gisk" },
+    sais: { name: "Sharjah American International School", logo: "sais" },
     efi: { name: "EFI Al Jabr, Dubai", logo: "efi" },
     starm: { name: "Star International School Mirdif", logo: "starm" },
     start: { name: "Star International School Al Twar", logo: "start" },
     waad: { name: "GEMS World Academy, Abu Dhabi", logo: "waad" },
     sun: { name: "Sunmarke School", logo: "sun" }
   },
+  /* the home ticker: every brand on the Schools screen plus the rest of the website's logo strip */
+  ticker: ["gwa", "nms", "sri", "jc", "wis", "wak", "wso", "gma", "tms", "gms", "gfp", "grd", "gabn", "gfs", "gls", "gooe", "gisk", "arc", "sais", "daa", "iim", "bits", "cfd", "drmi", "acer", "waad", "starm", "start", "sun", "efi", "kenzi"],
   logoWall: ["gwa", "nms", "sri", "jc", "wis", "wak", "wso", "gma", "tms", "gms", "arc", "daa", "iim", "bits", "cfd", "drmi", "acer", "waad", "starm", "start", "sun", "efi", "kenzi"],
 
   /* each school's project, from praxisadvertising.com and praxis-edge.com */

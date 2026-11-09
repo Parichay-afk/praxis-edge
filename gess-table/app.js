@@ -197,7 +197,7 @@
         <p>We will walk you through how schools across the UAE get chosen: their brand, their campus and their admissions. Ask anyone on the team, or touch to explore.</p>
         <div class="att-cta"><div class="ring"><i></i><i></i><b></b></div><span>Touch to start</span></div>
       </div>
-      <div class="ticker"><span class="tk-l">Trusted by</span><div class="tk-win"><div class="tk-run">${D.logoWall.concat(D.logoWall).map(id => `<span class="tk-logo">${logoOrName(id)}</span>`).join("")}</div></div></div>`;
+      <div class="ticker"><span class="tk-l">Trusted by</span><div class="tk-win"><div class="tk-run" style="animation-duration:${Math.round((D.ticker || D.logoWall).length * 2.6)}s">${(D.ticker || D.logoWall).concat(D.ticker || D.logoWall).map(id => `<span class="tk-logo">${logoOrName(id)}</span>`).join("")}</div></div></div>`;
     el.addEventListener("pointerup", () => { requestFs(); go("hello"); }, { once: true });
   }
 
