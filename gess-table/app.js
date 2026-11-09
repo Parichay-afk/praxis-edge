@@ -14,6 +14,7 @@
   /* ---------------- icons ---------------- */
   const sv = (p, w = 2.6) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const I = {
+    play: sv('<path d="M8 5l11 7-11 7z" fill="currentColor"/>', 2),
     back: sv('<path d="M15 5l-7 7 7 7"/>'), next: sv('<path d="M9 5l7 7-7 7"/>'), arrow: sv('<path d="M4 12h15M13 6l6 6-6 6"/>'),
     flip: sv('<path d="M4 9a8 8 0 0114-3l2 2M20 15a8 8 0 01-14 3l-2-2"/><path d="M20 4v4h-4M4 20v-4h4"/>', 2.4),
     restart: sv('<path d="M3 11l9-7 9 7M5 10v10h14V10"/>', 2.4),
@@ -69,7 +70,7 @@
   const logoImg = (id, cls) => { const s = D.schools[id]; return s && s.logo ? `<img class="${cls || ""}" src="logos/${s.logo}.png" alt="${esc(s.name)}">` : ""; };
   const logoOrName = id => logoImg(id) || `<span class="lname">${esc((D.schools[id] || {}).name || "")}</span>`;
   const spaceSchools = s => [...new Set(s.pairs.map(p => D.credit[p[1]]).concat(s.extras.map(n => D.credit[n])).filter(Boolean))];
-  const quoteHtml = id => { const q = D.quotes[id]; return q ? `<blockquote class="quote"><p>“${q.q}”</p><cite><b>${q.who}</b>${q.role}</cite></blockquote>` : ""; };
+  const quoteHtml = () => ""; /* testimonials are switched off on the table */
   function orderedSpaces() {
     const o = D.spaceOrder[S.type] || D.spaces.map(s => s.id);
     return o.map(space).filter(Boolean).concat(D.spaces.filter(s => o.indexOf(s.id) < 0));
@@ -150,7 +151,12 @@
     renderBar(); renderRail(); refreshSaveBtns();
     attractFlipTimer(name === "attract");
   }
-  function back() { const r = S.hist.pop(); go(r || "hello", { noHist: true }); }
+  function back() {
+    let r = S.hist.pop();
+    while (r && r === S.route && S.hist.length) r = S.hist.pop();
+    if (r && r.startsWith("tour:")) S.tourStep = +r.split(":")[1] || 0;
+    go(r || "hello", { noHist: true });
+  }
   function reset() { fresh(); closeModal(); renderTray(); go("attract", { noHist: true }); }
 
   /* ---------------- top bar ---------------- */
@@ -179,6 +185,7 @@
           ${d ? `<span class="rsw" style="background:${COLORS[d.color]}"></span>` : ""}${sug ? `<span class="rsug">Suggested</span>` : ""}</button>`;
       }).join("")}</div>
       <div class="r-ctl">
+        <button class="rbtn" data-act="back" ${S.hist.length ? "" : "disabled"}>${I.back}<span>Back</span></button>
         <button class="rbtn pen ${penOn ? "on" : ""}" data-act="pen">${I.pen}<span>${penOn ? "Drawing" : "Draw"}</span></button>
         <button class="rbtn" data-act="flip">${I.flip}<span>Flip</span></button>
         <button class="rbtn" data-act="restart">${I.restart}<span>Home</span></button>
@@ -242,7 +249,6 @@
     const n = Math.max(0, Math.min(TOUR.length - 1, +step || 0));
     S.tourStep = n;
     const pairs = D.spaces.reduce((t, s) => t + s.pairs.length, 0);
-    const kenzi = (D.projects.kenzi || [{}])[0].stat, comms = div("comms").proof;
     let body = "";
     if (n === 0) body = `
       <div class="tu-who">
@@ -274,8 +280,8 @@
         </div>
         <div class="tu-col tu-nums">
           <div class="stat"><b>${pairs}</b><span>campus before and afters on this table</span></div>
-          ${kenzi ? `<div class="stat"><b>${esc(kenzi[0])}</b><span>${esc(kenzi[1])} for Kenzi Nursery, Casablanca</span></div>` : ""}
-          ${comms ? `<div class="stat"><b>${esc(comms.stat)}</b><span>${esc(comms.label)}</span></div>` : ""}
+          <div class="stat"><b>1000+</b><span>projects delivered across MENA</span></div>
+          <div class="stat"><b>800+</b><span>Praxians ready to take on their next project</span></div>
           <button class="big-btn ghost" data-act="nav" data-id="spaces">See the before and afters${I.arrow}</button>
         </div>
       </div>`;
@@ -321,7 +327,6 @@
       <div class="sp-grid stag">
         ${orderedSpaces().map(s => `<button class="sp" data-act="space" data-id="${s.id}">
           <img src="${TH(s.cover)}" alt="" decoding="async">
-          ${spaceSchools(s).length ? `<span class="minis">${spaceSchools(s).filter(id => logoImg(id)).slice(0, 3).map(id => logoImg(id)).join("")}</span>` : ""}
           <span class="cap"><b>${s.name}</b><span>${s.pairs.length} before and afters</span></span></button>`).join("")}
       </div>
       <div class="sp-foot">${askHtml(d)}${saveBtn({ key: "div:spaces", group: "Service", title: d.name, sub: d.plan, color: COLORS[d.color] }, "Save Campus Design")}</div>`;
@@ -330,6 +335,21 @@
     return d.ask ? `<div class="ask"><span class="ask-l">Ask</span>${d.ask.map(q => `<span class="ask-q">${q}</span>`).join("")}</div>` : "";
   }
 
+  /* Videos: start them ourselves; if the browser holds back or the cached copy fails,
+     retry once straight from the network, then offer a big Play button. */
+  function startVideo(box) {
+    const v = $("video", box), btn = $(".vplay", box); if (!v) return;
+    const show = () => { if (btn && v.isConnected && v.paused) btn.hidden = false; };
+    let retried = false;
+    v.addEventListener("playing", () => { if (btn) btn.hidden = true; });
+    v.addEventListener("error", () => {
+      if (retried) return show();
+      retried = true; v.src = v.getAttribute("src").split("?")[0] + "?net=" + Date.now(); v.load();
+      const p = v.play(); if (p && p.catch) p.catch(show);
+    });
+    const p = v.play(); if (p && p.catch) p.catch(show);
+    setTimeout(() => { if (v.paused || v.readyState < 2) show(); }, 5000);
+  }
   function vSpace(el, id, idx) {
     const s = space(id), list = items(s);
     let i = Math.max(0, Math.min(list.length - 1, +idx || 0));
@@ -369,7 +389,8 @@
         x = 50; paint(); if (!touched) sweep();
         [list[i + 1], list[i - 1]].forEach(n => { if (n && n.kind === "pair") { new Image().src = IMG(n.a); new Image().src = IMG(n.b); } });
       } else if (it.kind === "video") {
-        cmp.innerHTML = `<video src="${it.src}" poster="${it.poster}" autoplay muted loop playsinline></video>`;
+        cmp.innerHTML = `<video src="${it.src}" poster="${it.poster}" autoplay muted loop playsinline preload="auto"></video><button class="vplay" data-act="vplay" hidden>${I.play}<span>Play video</span></button>`;
+        startVideo(cmp);
       } else cmp.innerHTML = `<img src="${IMG(it.a)}" alt="">`;
       const cid = it.a ? D.credit[it.a] : (it.school || null), school = cid ? D.schools[cid] : null;
       const cr = $("#credit", el);
@@ -407,8 +428,7 @@
       main = stepsHtml("How we build a school brand", [["Discover", "Parents, staff and students tell us what you stand for."], ["Define", "Positioning and a story only you can tell."], ["Design", "Identity, voice and the system around it."], ["Deliver", "Rolled out across print, digital and campus."]]) +
         `<div class="card bg-peach"><div class="case-top"><span class="client">${c.client}</span>${logoImg(c.school, "case-logo")}</div>
           <h3>${c.title}</h3><p>${c.body}</p><div class="result"><span class="diamond"></span>${c.result}</div>
-          ${saveBtn({ key: "case:cfd", group: "Branding · Case study", title: c.title, sub: c.result, client: D.schools.cfd.name, color: COLORS.peach })}</div>
-        <div class="card bg-lav">${quoteHtml("cfd")}</div>`;
+          ${saveBtn({ key: "case:cfd", group: "Branding · Case study", title: c.title, sub: c.result, client: D.schools.cfd.name, color: COLORS.peach })}</div>`;
     } else if (id === "enrolment") {
       const a = d.cases[0], b = d.cases[1];
       main = `<div class="card bg-sky"><div class="case-top"><span class="client">${a.client}</span>${logoImg(a.school, "case-logo")}</div>
@@ -723,6 +743,8 @@
     const act = t.dataset.act, id = t.dataset.id;
     switch (act) {
       case "flip": setFlip(!S.flipped); break;
+      case "back": if (S.hist.length) back(); break;
+      case "vplay": { const v = $("video", current); if (v) { v.muted = true; v.play().catch(() => { v.controls = true; }); } break; }
       case "restart": confirmRestart(); break;
       case "restart-now": reset(); break;
       case "hello": go("hello"); break;
