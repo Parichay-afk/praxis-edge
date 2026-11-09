@@ -135,7 +135,7 @@
     if (S.route && !opts.noHist && S.route !== route && !FULL.includes(S.route.split(":")[0])) S.hist.push(S.route);
     S.route = route;
     const [name, a, b] = route.split(":");
-    const R = { attract: vAttract, hello: vHello, spaces: vSpaces, space: vSpace, div: vDiv, schools: vSchools, review: vReview, sent: vSent }[name];
+    const R = { attract: vAttract, hello: vHello, tour: vTour, spaces: vSpaces, space: vSpace, div: vDiv, schools: vSchools, review: vReview, sent: vSent }[name];
     stage.classList.toggle("full", FULL.includes(name));
     stage.classList.toggle("wide", name === "review");
     const el = document.createElement("section");
@@ -165,7 +165,7 @@
   }
 
   /* ---------------- left rail ---------------- */
-  const RAIL = [["hello", "Your school"], ["spaces", "Campus Design"], ["brand", "Branding"], ["enrolment", "Enrollment Support"], ["comms", "Comms & PR"], ["schools", "Schools we work with"]];
+  const RAIL = [["tour", "Meet Praxis Edge"], ["hello", "Your school"], ["spaces", "Campus Design"], ["brand", "Branding"], ["enrolment", "Enrollment Support"], ["comms", "Comms & PR"], ["schools", "Schools we work with"]];
   function railActive() {
     const [n, a] = (S.route || "").split(":");
     if (n === "space" || n === "spaces") return "spaces";
@@ -196,8 +196,10 @@
         <h1>Pull up a chair.<br><em>Let’s talk about your school.</em></h1>
         <p>We will walk you through how schools across the UAE get chosen: their brand, their campus and their admissions. Ask anyone on the team, or touch to explore.</p>
         <div class="att-cta"><div class="ring"><i></i><i></i><b></b></div><span>Touch to start</span></div>
+        <button class="att-alt" id="attAlt">Just exploring? <b>See what we do in two minutes</b>${I.arrow}</button>
       </div>
       <div class="ticker"><span class="tk-l">Trusted by</span><div class="tk-win"><div class="tk-run" style="animation-duration:${Math.round((D.ticker || D.logoWall).length * 2.6)}s">${(D.ticker || D.logoWall).concat(D.ticker || D.logoWall).map(id => `<span class="tk-logo">${logoOrName(id)}</span>`).join("")}</div></div></div>`;
+    $("#attAlt", el).addEventListener("pointerup", e => { e.stopPropagation(); requestFs(); go("tour:0"); });
     el.addEventListener("pointerup", () => { requestFs(); go("hello"); }, { once: true });
   }
 
@@ -207,6 +209,7 @@
         <div class="hello-l">
           <span class="eyebrow">Let’s talk</span>
           <h2 class="h-l">Tell us about your school</h2>
+          <button class="hello-tour" data-act="nav" data-id="tour"><span class="diamond"></span><span><b>Not sure yet?</b> Start with a two-minute tour of what we do</span>${I.arrow}</button>
           <div class="sec"><h4>Who are we talking to?</h4>
             <div class="types">${D.types.map(t => `<button class="ttile ${S.type === t.id ? "sel" : ""}" data-act="type" data-id="${t.id}"><span class="ti">${ICO[t.id]}</span><b>${t.label}</b><small>${t.note}</small></button>`).join("")}</div></div>
           <div class="sec"><h4>What is on your mind this year?</h4>
@@ -223,7 +226,90 @@
     col.innerHTML = `<h4>${S.suggested.size ? "Where we would start" : "How we can help"}</h4>
       ${order.map(id => { const d = div(id), sug = S.suggested.has(id); return `<button class="startc ${d.color} ${sug ? "sug" : ""}" data-act="nav" data-id="${id}">
         ${sug ? `<span class="tag">Suggested</span>` : ""}<b>${d.name}</b><span>${d.line}</span><i>${I.arrow}</i></button>`; }).join("")}
-      <button class="startc ghost" data-act="nav" data-id="schools"><b>Schools we work with</b><span>${D.logoWall.length} institutions, from nurseries to universities.</span><i>${I.arrow}</i></button>`;
+      <button class="startc ghost" data-act="nav" data-id="schools"><b>Schools we work with</b><span>A few of the 50+ schools, universities and nurseries we have worked with.</span><i>${I.arrow}</i></button>`;
+  }
+
+  /* ---------------- Meet Praxis Edge: a five-step tour for people who just want to know what we do ---------------- */
+  const TOUR = ["Who we are", "What we do", "Proof", "How we work", "What next"];
+  const TOUR_DIVS = ["spaces", "brand", "enrolment", "comms"];
+  function tourToPlan() {
+    TOUR_DIVS.forEach(id => { const d = div(id), key = "div:" + id; if (!inPlan(key)) S.plan.push({ key, group: "Service", title: d.name, sub: d.plan, color: COLORS[d.color] }); });
+    renderTray(true);
+  }
+  function vTour(el, step) {
+    const n = Math.max(0, Math.min(TOUR.length - 1, +step || 0));
+    S.tourStep = n;
+    const pairs = D.spaces.reduce((t, s) => t + s.pairs.length, 0);
+    const kenzi = (D.projects.kenzi || [{}])[0].stat, comms = div("comms").proof;
+    let body = "";
+    if (n === 0) body = `
+      <div class="tu-who">
+        <div class="tu-col">
+          <h2 class="h-l">We help schools get chosen.</h2>
+          <p class="lead">Praxis Edge is the education team at Praxis Advertising. We design the campus, build the brand, tell the story and help fill the seats, for schools, nurseries and universities.</p>
+          <div class="tu-facts">
+            <div class="stat"><b>1999</b><span>Praxis Advertising founded in Dubai</span></div>
+            <div class="stat"><b>50+</b><span>schools, universities and nurseries worked with</span></div>
+            <div class="stat"><b>UAE + MENA</b><span>from Dubai and Abu Dhabi to Casablanca</span></div>
+            <div class="stat"><b>1 partner</b><span>design, production and installation, end to end</span></div>
+          </div>
+        </div>
+        <div class="tu-pics"><img src="${IMG(2)}" alt=""><img src="${IMG(92)}" alt=""><img src="${IMG(69)}" alt=""></div>
+      </div>`;
+    if (n === 1) body = `
+      <h2 class="h-l">Four ways we help a school grow</h2>
+      <div class="tu-divs">${TOUR_DIVS.map(id => {
+        const d = div(id), bits = id === "spaces" ? orderedSpaces().slice(0, 4).map(x => x.name) : (d.services || []).slice(0, 3).map(x => x[0]);
+        return `<button class="tu-div bg-${d.color}" data-act="nav" data-id="${id}">
+          <b>${d.name}</b><span class="tu-dl">${d.line}</span>
+          <span class="tu-db">${bits.map(b => `<i>${esc(b)}</i>`).join("")}</span>
+          <span class="tu-go">See the work${I.arrow}</span></button>`; }).join("")}</div>`;
+    if (n === 2) body = `
+      <div class="tu-proof">
+        <div class="tu-col">
+          <h2 class="h-l">50+ schools, universities and nurseries</h2>
+          <div class="tu-logos">${(D.ticker || D.logoWall).map(id => `<span class="tu-lg">${logoOrName(id)}</span>`).join("")}</div>
+        </div>
+        <div class="tu-col tu-nums">
+          <div class="stat"><b>${pairs}</b><span>campus before and afters on this table</span></div>
+          ${kenzi ? `<div class="stat"><b>${esc(kenzi[0])}</b><span>${esc(kenzi[1])} for Kenzi Nursery, Casablanca</span></div>` : ""}
+          ${comms ? `<div class="stat"><b>${esc(comms.stat)}</b><span>${esc(comms.label)}</span></div>` : ""}
+          <button class="big-btn ghost" data-act="nav" data-id="spaces">See the before and afters${I.arrow}</button>
+        </div>
+      </div>`;
+    if (n === 3) body = `
+      <h2 class="h-l">One partner, from first idea to opening day</h2>
+      <p class="lead tu-lead">No juggling a designer, a printer, an installer and a PR agency. One team carries the idea all the way through.</p>
+      <div class="tu-steps">${[["Listen", "We meet your leaders, staff, students and parents to find what makes your school different."],
+        ["Plan", "A clear brief: what to say, which spaces to change and how to reach the right families."],
+        ["Design", "Brand, campaigns and spaces designed together, so it all feels like one school."],
+        ["Deliver", "We produce, install and launch it, managing every detail on site."]].map((x, k) =>
+        `<div class="tu-step"><span class="sn">0${k + 1}</span><b>${x[0]}</b><span>${x[1]}</span></div>`).join("")}</div>
+      <div class="tu-inhouse"><span class="diamond"></span>Design, production and installation, all under one roof</div>
+      <div class="tu-band">${[34, 44, 83, 167].map(x => `<img src="${IMG(x)}" alt="">`).join("")}</div>`;
+    if (n === 4) body = `
+      <h2 class="h-l">Where would you like to go from here?</h2>
+      <div class="tu-next">
+        <button class="tu-opt sun" data-act="tour-email"><b>Email me this overview</b><span>What we do, with links to the work, sent to your inbox.</span><i>${I.send}</i></button>
+        <button class="tu-opt" data-act="hello"><b>Talk about my school</b><span>A few quick questions and we will show you what fits.</span><i>${I.arrow}</i></button>
+        <button class="tu-opt" data-act="nav" data-id="spaces"><b>Look around the work</b><span>${pairs} campus before and afters, room by room.</span><i>${I.arrow}</i></button>
+      </div>
+      <div class="tu-qr"><img src="brand/qr.svg" alt=""><span>Or scan to keep exploring at <b>${D.qrUrl}</b></span></div>`;
+    el.innerHTML = `<div class="tour">
+        <div class="tu-head"><span class="eyebrow">Meet Praxis Edge</span>
+          <div class="tu-nav">${TOUR.map((t, k) => `<button class="tn ${k === n ? "on" : ""} ${k < n ? "done" : ""}" data-act="tstep" data-id="${k}"><span>0${k + 1}</span>${t}</button>`).join("")}</div></div>
+        <div class="tu-body stag">${body}</div>
+        <div class="tu-foot">
+          ${n > 0 ? `<button class="big-btn ghost" data-act="tstep" data-id="${n - 1}">${I.back}Back</button>` : `<span></span>`}
+          ${n < TOUR.length - 1 ? `<button class="big-btn" data-act="tstep" data-id="${n + 1}">Next: ${TOUR[n + 1]}${I.arrow}</button>` : `<span></span>`}
+        </div></div>`;
+    /* swipe left or right to move through the tour */
+    let sx = null;
+    el.addEventListener("pointerdown", e => { sx = toStage(e).x; });
+    el.addEventListener("pointerup", e => {
+      if (sx == null || penOn) return; const dx = toStage(e).x - sx; sx = null;
+      if (Math.abs(dx) > 160) { const m = n + (dx < 0 ? 1 : -1); if (m >= 0 && m < TOUR.length) go("tour:" + m, { noHist: true }); }
+    });
   }
 
   function vSpaces(el) {
@@ -641,7 +727,9 @@
       case "restart": confirmRestart(); break;
       case "restart-now": reset(); break;
       case "hello": go("hello"); break;
-      case "nav": go(id === "hello" ? "hello" : id === "spaces" ? "spaces" : id === "schools" ? "schools" : "div:" + id); break;
+      case "nav": go(id === "tour" ? "tour:" + (S.tourStep || 0) : id === "hello" ? "hello" : id === "spaces" ? "spaces" : id === "schools" ? "schools" : "div:" + id); break;
+      case "tstep": go("tour:" + id, { noHist: true }); break;
+      case "tour-email": tourToPlan(); go("review"); break;
       case "spaces": go("spaces"); break;
       case "space": go("space:" + id + ":0"); break;
       case "openproj": go("space:" + t.dataset.space + ":" + t.dataset.i); break;
