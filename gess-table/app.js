@@ -19,6 +19,7 @@
     flip: sv('<path d="M4 9a8 8 0 0114-3l2 2M20 15a8 8 0 01-14 3l-2-2"/><path d="M20 4v4h-4M4 20v-4h4"/>', 2.4),
     restart: sv('<path d="M3 11l9-7 9 7M5 10v10h14V10"/>', 2.4),
     pen: sv('<path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 6l3 3"/>', 2.4),
+    lock: sv('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>', 2.4),
     undo: sv('<path d="M9 7L4 12l5 5"/><path d="M4 12h10a6 6 0 010 12"/>', 2.4),
     trash: sv('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', 2.4),
     check: sv('<path d="M5 12.5l4.5 4.5L19 7"/>', 3.2), plus: sv('<path d="M12 5v14M5 12h14"/>', 3), x: sv('<path d="M6 6l12 12M18 6L6 18"/>', 3),
@@ -189,6 +190,7 @@
         <button class="rbtn pen ${penOn ? "on" : ""}" data-act="pen">${I.pen}<span>${penOn ? "Drawing" : "Draw"}</span></button>
         <button class="rbtn" data-act="flip">${I.flip}<span>Flip</span></button>
         <button class="rbtn" data-act="restart">${I.restart}<span>Home</span></button>
+        <button class="rbtn" data-act="lock">${I.lock}<span>Lock</span></button>
       </div>`;
   }
 
@@ -199,6 +201,7 @@
     const col = arr => arr.concat(arr).map(n => `<img src="${TH(n)}" alt="" decoding="async">`).join("");
     el.innerHTML = `
       <div class="doodle"></div>
+      <button class="att-lock" id="attLock">${I.lock}<span>Lock</span></button>
       <div class="mosaic"><div class="mcol">${col(colA)}</div><div class="mcol">${col(colB)}</div></div>
       <div class="att-left">
         <img src="brand/logo-reversed.png" alt="Praxis Edge">
@@ -209,6 +212,7 @@
       </div>
       <div class="ticker"><span class="tk-l">Trusted by</span><div class="tk-win"><div class="tk-run" style="animation-duration:${Math.round((D.ticker || D.logoWall).length * 2.6)}s">${(D.ticker || D.logoWall).concat(D.ticker || D.logoWall).map(id => `<span class="tk-logo">${logoOrName(id)}</span>`).join("")}</div></div></div>`;
     $("#attAlt", el).addEventListener("pointerup", e => { e.stopPropagation(); requestFs(); go("tour:0"); });
+    $("#attLock", el).addEventListener("pointerup", e => { e.stopPropagation(); setLock(true); });
     el.addEventListener("pointerup", () => { requestFs(); go("hello"); }, { once: true });
   }
 
@@ -721,6 +725,7 @@
     if (fe) { const sp = $("span", fe); sp.textContent = S.form[f]; sp.scrollLeft = 9999; fe.classList.remove("err"); }
   }
   addEventListener("keydown", e => {
+    if (locked) { e.preventDefault(); return; }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     let f = kbField;
     if (!f) {
@@ -742,6 +747,41 @@
     else return;
     e.preventDefault();
   });
+
+  /* ---------------- touch lock ----------------
+     Covers the whole screen so brushes, palms and leaning arms do nothing.
+     To unlock, hold ONE finger on the lock bar for 2 seconds; a second touch
+     anywhere, or sliding off, cancels the hold. */
+  let locked = false;
+  const lockEl = document.createElement("div");
+  lockEl.id = "lock";
+  lockEl.innerHTML = `<div class="lk-badge"><i class="lk-fill"></i>${I.lock}<span><b>Screen locked</b><small>Hold here for 2 seconds to unlock</small></span></div>`;
+  stage.appendChild(lockEl);
+  const badge = $(".lk-badge", lockEl), touches = new Set();
+  let holdT = null, holdId = null, hx = 0, hy = 0;
+  function setLock(v) {
+    locked = v; lockEl.classList.toggle("on", v); cancelHold(); touches.clear();
+    if (v) { if (penOn) setPen(false); if (kbField) hideKb(); toast("Screen locked"); } else { poke(); toast("Unlocked"); }
+  }
+  function cancelHold() { clearTimeout(holdT); holdT = null; holdId = null; badge.classList.remove("hold"); }
+  const swallow = e => { e.stopPropagation(); if (e.cancelable) e.preventDefault(); };
+  ["click", "dblclick", "touchstart", "touchmove", "touchend", "wheel", "contextmenu"].forEach(t => lockEl.addEventListener(t, swallow, { passive: false }));
+  lockEl.addEventListener("pointerdown", e => {
+    swallow(e); touches.add(e.pointerId);
+    const onBadge = badge.contains(e.target);
+    if (touches.size > 1 || !onBadge) {
+      cancelHold();
+      if (!onBadge) { badge.classList.remove("nudge"); void badge.offsetWidth; badge.classList.add("nudge"); }
+      return;
+    }
+    holdId = e.pointerId; hx = e.clientX; hy = e.clientY;
+    try { lockEl.setPointerCapture(e.pointerId); } catch (x) {}
+    badge.classList.add("hold");
+    holdT = setTimeout(() => { if (touches.size === 1 && holdId !== null) setLock(false); }, 2000);
+  });
+  lockEl.addEventListener("pointermove", e => { swallow(e); if (e.pointerId === holdId && Math.hypot(e.clientX - hx, e.clientY - hy) > 40) cancelHold(); });
+  const lift = e => { swallow(e); touches.delete(e.pointerId); if (e.pointerId === holdId) cancelHold(); };
+  lockEl.addEventListener("pointerup", lift); lockEl.addEventListener("pointercancel", lift);
 
   /* ---------------- pen (discussion only, clears on navigation) ---------------- */
   let penOn = false, strokes = [], live = {}, penTool = "coral";
@@ -777,6 +817,7 @@
     switch (act) {
       case "flip": setFlip(!S.flipped); break;
       case "back": if (S.hist.length) back(); break;
+      case "lock": setLock(true); break;
       case "vplay": { const v = $("video", current); if (v) { v.muted = true; v.play().catch(() => { v.controls = true; }); } break; }
       case "restart": confirmRestart(); break;
       case "restart-now": reset(); break;
@@ -824,6 +865,7 @@
   function poke() { last = Date.now(); }
   document.addEventListener("pointermove", e => { if (e.pointerType === "mouse") document.body.classList.remove("touching"); });
   stage.addEventListener("pointerdown", e => {
+    if (locked) return;
     poke();
     document.body.classList.toggle("touching", e.pointerType !== "mouse");
     if (modalEl && modalEl.dataset.kind === "idle") closeModal();
@@ -834,7 +876,7 @@
   document.addEventListener("contextmenu", e => e.preventDefault());
   setInterval(() => {
     const name = (S.route || "").split(":")[0];
-    if (name === "attract" || name === "sent" || modalEl) return;
+    if (locked || name === "attract" || name === "sent" || modalEl) return;
     const limit = S.plan.length || (S.form && (S.form.name || S.form.email)) ? IDLE_MS * 2 : IDLE_MS;
     if (Date.now() - last > limit) idleModal();
   }, 1000);

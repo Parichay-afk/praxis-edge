@@ -528,3 +528,22 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .vplay svg{width:30px;height:30px}
 .dv-scroll > :first-child{margin-top:auto}
 .tu-logos{grid-template-columns:repeat(7,1fr);gap:8px}
+
+/* touch lock */
+#lock{position:absolute;inset:0;z-index:300;display:none;touch-action:none}
+#lock.on{display:block}
+.lk-badge{position:absolute;left:14px;bottom:20px;width:460px;height:84px;display:flex;align-items:center;gap:16px;padding:0 24px;border-radius:8px;background:var(--ink);color:#fff;overflow:hidden;user-select:none}
+.lk-badge > :not(.lk-fill){position:relative}
+.lk-badge svg{width:30px;height:30px;flex:none}
+.lk-badge span{display:flex;flex-direction:column;gap:3px;font-family:"Montserrat"}
+.lk-badge b{font-weight:800;font-size:22px}
+.lk-badge small{font-family:"Poppins";font-size:16px;opacity:.85}
+.lk-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--coral)}
+.lk-badge.hold .lk-fill{width:100%;transition:width 2s linear}
+.lk-badge.nudge{animation:lkn .45s}
+@keyframes lkn{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.r-ctl .rbtn{font-size:12px;gap:3px;padding:6px 0}
+.r-ctl .rbtn svg{width:20px;height:20px}
+.r-ctl{gap:5px}
+.att-lock{position:absolute;left:28px;bottom:112px;display:flex;align-items:center;gap:10px;height:56px;padding:0 18px;border-radius:8px;background:transparent;border:2px solid rgba(255,255,255,.35);color:#fff;font-family:"Montserrat";font-weight:700;font-size:17px;z-index:4}
+.att-lock svg{width:20px;height:20px}
