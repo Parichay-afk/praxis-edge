@@ -6,8 +6,8 @@
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const stage = $("#stage"), screensEl = $("#screens"), bar = $("#bar"), rail = $("#rail"), tray = $("#tray"), overlay = $("#overlay");
   const ink = $("#ink"), penbar = $("#penbar"), ctx = ink.getContext("2d");
-  const IMG = n => "img/image" + n + ".jpg";
-  const TH = n => "img/t/image" + n + ".jpg";   /* 720px copies for grids, strips and thumbnails */
+  const IMG = n => (D.ext && D.ext[n]) || "img/image" + n + ".jpg";
+  const TH = n => (D.ext && D.ext[n]) || "img/t/image" + n + ".jpg";   /* 720px copies for grids, strips and thumbnails */
   const IDLE_MS = 240000, COUNTDOWN = 12;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 

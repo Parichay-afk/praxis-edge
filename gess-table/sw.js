@@ -1,14 +1,16 @@
 /* Offline cache. Once the table has loaded on a connection it keeps working with no internet.
    App files (html, js, css, json) check the network first so updates show up on the next reload;
    photos, logos, fonts and video come straight from the cache. */
-const V = "edge-gess-v9";
+const V = "edge-gess-v10";
 const SHELL = /(\/|\.html|\.js|\.css|\.json|\.webmanifest)$/;
 
 self.addEventListener("install", e => {
   self.skipWaiting();
   e.waitUntil(caches.open(V).then(c =>
     fetch("precache.json", { cache: "no-store" }).then(r => r.json())
-      .then(list => Promise.all(list.map(u => c.add(new Request(u, { cache: "reload" })).catch(() => {}))))
+      .then(list => Promise.all(list.map(u => /^https?:/.test(u)
+        ? fetch(new Request(u, { mode: "no-cors" })).then(r => c.put(u, r)).catch(() => {})
+        : c.add(new Request(u, { cache: "reload" })).catch(() => {}))))
   ).catch(() => {}));
 });
 
@@ -33,7 +35,12 @@ async function ranged(req, res) {
 
 self.addEventListener("fetch", e => {
   const req = e.request, url = new URL(req.url);
-  if (req.method !== "GET" || url.origin !== location.origin) return;
+  if (req.method !== "GET") return;
+  if (url.hostname === "cdn.prod.website-files.com") { /* website photos: keep a copy for offline use */
+    e.respondWith(caches.match(req.url).then(hit => hit || fetch(req).then(res => { const cp = res.clone(); caches.open(V).then(c => c.put(req.url, cp)); return res; })));
+    return;
+  }
+  if (url.origin !== location.origin) return;
   if (url.searchParams.has("net")) return; /* a deliberate retry: straight to the network */
   const keep = res => { if (res && res.status === 200) { const cp = res.clone(); caches.open(V).then(c => c.put(req, cp)); } return res; };
   if (SHELL.test(url.pathname)) {
