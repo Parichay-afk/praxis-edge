@@ -35,9 +35,10 @@
 
   /* ---------------- state ---------------- */
   let S;
+  const savedFlip = () => { try { return localStorage.getItem("edge-flip") === "1"; } catch (e) { return false; } };
   const blankForm = () => ({ name: "", email: "", school: "", role: "", note: "" });
   function fresh() {
-    S = { type: null, needs: new Set(), suggested: new Set(), plan: [], route: null, hist: [], flipped: S ? S.flipped : false, form: blankForm(), consent: true };
+    S = { type: null, needs: new Set(), suggested: new Set(), plan: [], route: null, hist: [], flipped: S ? S.flipped : savedFlip(), form: blankForm(), consent: true };
   }
   fresh();
 
@@ -48,7 +49,7 @@
     stage.style.transform = `scale(${scale}) rotate(${S.flipped ? 180 : 0}deg)`;
   }
   addEventListener("resize", fit);
-  const setFlip = v => { S.flipped = v; fit(); };
+  const setFlip = v => { S.flipped = v; fit(); try { localStorage.setItem("edge-flip", v ? "1" : "0"); } catch (e) {} };
   function toStage(e) {
     const r = stage.getBoundingClientRect();
     let x = (e.clientX - r.left) / scale, y = (e.clientY - r.top) / scale;
@@ -149,7 +150,6 @@
     if (old) { old.classList.remove("on"); setTimeout(() => old.remove(), 280); }
     hideKb(); clearInk(); setPen(false);
     renderBar(); renderRail(); refreshSaveBtns();
-    attractFlipTimer(name === "attract");
   }
   function back() {
     let r = S.hist.pop();
@@ -818,8 +818,6 @@
   }
   function closeModal() { clearInterval(cdT); if (modalEl) { const m = modalEl; m.classList.remove("on"); setTimeout(() => m.remove(), 300); modalEl = null; poke(); } }
 
-  let afT = null;
-  function attractFlipTimer(on) { clearInterval(afT); if (on) afT = setInterval(() => setFlip(!S.flipped), 20000); }
 
   /* ---------------- staff panel ----------------
      No touch gesture opens it, so visitors can never bring it up by accident.
