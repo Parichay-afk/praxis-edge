@@ -519,7 +519,7 @@ window.EDGE = {
       pairs: [[85,86],[87,88],[89,90],[91,92],[94,95],[97,98],[100,101],[102,103],[104,105],[107,108]], extras: [84, 93, 96, 99, 106, 109, 110],
       video: { src: "media/edge-daa-timeline.mp4", poster: "media/edge-daa-timeline-cover.jpg", label: "GEMS Dubai American Academy timeline corridor, drone fly-through", school: "daa", first: true } },
     { id: "post16", name: "Post-16 Hubs", cover: 111, blurb: "Grown-up spaces for students about to step out.",
-      pairs: [[112,113],[114,115],[116,117]], extras: [111, 118, 119] },
+      pairs: [[119,111],[112,113],[114,115],[116,117]], extras: [] },
     { id: "sports", name: "Sports Areas", cover: 132, blurb: "Energy, pride and team spirit on every surface.",
       pairs: [[123,124],[125,126],[127,128],[129,130],[131,132],[133,134]], extras: [120, 121, 122] },
     { id: "corridors", name: "Corridors", cover: 141, blurb: "Blank walls turned into learning moments.",
