@@ -669,14 +669,16 @@
     kb.innerHTML = `<div class="kbhead"><span>${FIELD_LABEL[f] || ""}</span><button class="w mod hide" data-k="close">Hide</button></div>` +
       ROWS[kbLayer].map(r => `<div class="row">${r.map(k => `<button class="${cls(k)}" data-k="${k}">${lab(k)}</button>`).join("")}</div>`).join("");
   }
-  let kbField = null;
+  let kbField = null, kbPhys = false;
   function showKb(field) {
     if (!kb) buildKb();
     kbField = field;
     kbLayer = "abc";
     kbShift = ["name", "school", "note", "role"].includes(field) && !S.form[field];
     $$(".field").forEach(x => x.classList.toggle("focus", x.dataset.field === field));
-    drawKb(); kb.classList.add("on");
+    drawKb();
+    if (kbPhys) return; /* a physical keyboard is in use: keep the screen clear */
+    kb.classList.add("on");
     requestAnimationFrame(() => {
       const fe = $(`[data-field="${field}"]`); if (!fe || !current) return;
       current.style.transform = "";
@@ -709,6 +711,37 @@
     if (fe) { const sp = $("span", fe); sp.textContent = S.form[f]; sp.scrollLeft = 9999; fe.classList.remove("err"); }
     drawKb();
   }
+
+  /* A physical (Bluetooth or USB) keyboard types into the same fields.
+     The first key press tucks the on-screen keyboard away; tapping a field brings it back. */
+  function typeText(f, c) {
+    let v = S.form[f] + (f === "email" ? c.toLowerCase() : c);
+    S.form[f] = v.slice(0, f === "note" ? 280 : 80);
+    const fe = $(`[data-field="${f}"]`);
+    if (fe) { const sp = $("span", fe); sp.textContent = S.form[f]; sp.scrollLeft = 9999; fe.classList.remove("err"); }
+  }
+  addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    let f = kbField;
+    if (!f) {
+      if (!$('[data-field="name"]', current || document)) return; /* only on the form screen */
+      if (e.key.length !== 1 && e.key !== "Tab") return;
+      kbPhys = true; f = FIELD_ORDER.find(k => !S.form[k]) || "name"; showKb(f);
+    }
+    if (!kbPhys) { kbPhys = true; if (kb) kb.classList.remove("on"); if (current) current.style.transform = ""; }
+    poke();
+    const order = FIELD_ORDER.concat($('[data-field="note"]') ? ["note"] : []);
+    const step = d => { const n = order[order.indexOf(f) + d]; if (n) showKb(n); else if (d > 0) hideKb(); };
+    if (e.key === "Backspace") { S.form[f] = S.form[f].slice(0, -1); typeText(f, ""); }
+    else if (e.key === "Tab") step(e.shiftKey ? -1 : 1);
+    else if (e.key === "Enter") step(1);
+    else if (e.key === "Escape") hideKb();
+    else if (e.key === "ArrowDown") step(1);
+    else if (e.key === "ArrowUp") step(-1);
+    else if (e.key.length === 1) typeText(f, e.key);
+    else return;
+    e.preventDefault();
+  });
 
   /* ---------------- pen (discussion only, clears on navigation) ---------------- */
   let penOn = false, strokes = [], live = {}, penTool = "coral";
@@ -763,7 +796,7 @@
       case "vprev": current._show(current._i() - 1); break;
       case "vnext": current._show(current._i() + 1); break;
       case "vgo": current._show(+t.dataset.i); break;
-      case "field": showKb(t.dataset.field); break;
+      case "field": kbPhys = false; showKb(t.dataset.field); break;
       case "consent": S.consent = !S.consent; t.classList.toggle("on", S.consent); break;
       case "send": hideKb(); submit(); break;
       case "pen": setPen(!penOn); break;
