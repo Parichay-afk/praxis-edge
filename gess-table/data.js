@@ -511,7 +511,7 @@ window.EDGE = {
       pairs: [[76,77],[78,79],[80,81],[82,83]], extras: [75] },
     { id: "timelines", name: "Timelines", cover: 92, blurb: "Your history, turned into a walk-through story.",
       pairs: [[85,86],[87,88],[89,90],[91,92],[94,95],[97,98],[100,101],[102,103],[104,105],[107,108]], extras: [84, 93, 96, 99, 106, 109, 110],
-      video: { src: "media/edge-daa-timeline.mp4", poster: "media/edge-daa-timeline-cover.jpg", label: "GEMS Dubai American Academy timeline corridor, drone fly-through", school: "daa", first: true } },
+      video: { src: "media/edge-daa-timeline.mp4", poster: "media/edge-daa-timeline-cover.jpg", label: "GEMS Dubai American Academy timeline corridor, drone fly-through", school: "daa" } },
     { id: "post16", name: "Post-16 Hubs", cover: 111, blurb: "Grown-up spaces for students about to step out.",
       pairs: [[119,111],[112,113],[114,115],[116,117]], extras: [] },
     { id: "sports", name: "Sports Areas", cover: 132, blurb: "Energy, pride and team spirit on every surface.",

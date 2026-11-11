@@ -79,8 +79,10 @@
   }
   function items(s) {
     const list = s.pairs.map(p => ({ kind: "pair", b: p[0], a: p[1] }));
-    if (s.video) list[s.video.first ? "unshift" : "push"]({ kind: "video", src: s.video.src, poster: s.video.poster, a: null, school: s.video.school || null });
+    const vid = s.video && { kind: "video", src: s.video.src, poster: s.video.poster, a: null, school: s.video.school || null };
+    if (vid && s.video.first) list.unshift(vid);
     s.extras.forEach(n => list.push({ kind: "img", a: n }));
+    if (vid && !s.video.first) list.push(vid); /* otherwise the video is the last thing in the section */
     return list;
   }
   function schoolProjects(sid) {
