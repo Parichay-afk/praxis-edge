@@ -390,15 +390,9 @@ window.EDGE = {
     177: "start", 179: "start", 181: "starm", 194: "starm", 196: "starm",
     183: "waad", 184: "waad", 198: "waad", 200: "waad", 201: "waad",
     186: "sun", 188: "sun", 190: "sun", 192: "sun",
-    203: "kenzi", 205: "kenzi"
+    203: "kenzi", 205: "kenzi", 207: "kenzi"
   },
-  /* photos that live on the Praxis Edge website rather than in img/ (cached for offline use like the rest) */
-  ext: {
-    202: "https://cdn.prod.website-files.com/6aea046d8ab45aba0b8a9505/6af18f8bc63de487c0a8841d_reading-corner-with-eiffel-tower-shelf-before.jpeg",
-    203: "https://cdn.prod.website-files.com/6aea046d8ab45aba0b8a9505/6af18f8bc63de487c0a88425_reading-corner-with-eiffel-tower-shelf-after.jpeg",
-    204: "https://cdn.prod.website-files.com/6aea046d8ab45aba0b8a9505/6af18f8bc63de487c0a88419_sleep-room-sweet-dreams-before.jpeg",
-    205: "https://cdn.prod.website-files.com/6aea046d8ab45aba0b8a9505/6af18f8bc63de487c0a88431_sleep-room-sweet-dreams-after.jpeg"
-  },
+  ext: {},
 
   /* real testimonials from school leaders */
   quotes: {
@@ -508,7 +502,7 @@ window.EDGE = {
       pairs: [[15,2],[16,17],[18,19],[20,21],[22,23],[24,25],[26,27],[28,29],[30,31],[169,170],[171,172]],
       extras: [14], video: { src: "media/edge-reel-nms-reception.mp4", poster: "media/edge-reel-nms-cover.jpg", label: "GEMS New Millennium School reception, the reel", school: "nms" } },
     { id: "nurseries", name: "Nurseries / KG", cover: 34, blurb: "Warm, playful spaces parents trust at first sight.",
-      pairs: [[33,34],[35,36],[37,38],[173,174],[202,203],[204,205]], extras: [39, 32, 175] },
+      pairs: [[33,34],[35,36],[37,38],[173,174],[202,203],[204,205],[206,207]], extras: [39, 32, 175] },
     { id: "usp", name: "USP Zones", cover: 44, blurb: "Your school's story, on the walls families walk past.",
       pairs: [[41,42],[43,44],[45,46],[47,48],[51,52],[53,54],[176,177],[178,179],[180,181],[182,183]], extras: [40, 50, 49, 184] },
     { id: "labs", name: "AI & Tech Labs", cover: 69, blurb: "Labs that look like the future you teach.",
@@ -523,7 +517,7 @@ window.EDGE = {
     { id: "sports", name: "Sports Areas", cover: 132, blurb: "Energy, pride and team spirit on every surface.",
       pairs: [[123,124],[125,126],[127,128],[129,130],[131,132],[133,134]], extras: [120, 121, 122] },
     { id: "corridors", name: "Corridors", cover: 141, blurb: "Blank walls turned into learning moments.",
-      pairs: [[136,137],[138,139],[140,141],[144,145],[146,147],[148,149],[150,151],[152,153],[154,155],[156,157],[195,196],[197,198],[199,200]], extras: [135, 143, 158, 159, 201] },
+      pairs: [[208,209],[136,137],[138,139],[140,141],[142,143],[144,145],[146,147],[148,149],[150,151],[152,153],[154,155],[156,157],[195,196],[197,198],[199,200]], extras: [135, 158, 159, 201] },
     { id: "cafeterias", name: "Cafeterias", cover: 167, blurb: "Dining spaces students actually want to be in.",
       pairs: [[160,161],[162,163],[164,165],[166,167]], extras: [168] }
   ],
