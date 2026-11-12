@@ -561,7 +561,12 @@
   const setJ = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
   function markLead(id, status) { const L = getJ(LS); L.forEach(l => { if (l.id === id) l.status = status; }); setJ(LS, L); }
 
+  const thumbCache = new Map();
   function thumb(src) {
+    if (src && thumbCache.has(src)) return Promise.resolve(thumbCache.get(src));
+    return thumbRaw(src).then(r => { if (r && src) { if (thumbCache.size > 40) thumbCache.delete(thumbCache.keys().next().value); thumbCache.set(src, r); } return r; });
+  }
+  function thumbRaw(src) {
     return new Promise(res => {
       if (!src) return res(null);
       const im = new Image();
@@ -613,22 +618,38 @@
       const r = await fetch(D.sendEndpoint, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload), signal: ctl.signal, redirect: "follow" });
       clearTimeout(t);
       const j = await r.json().catch(() => ({}));
+      post.error = j.error || (r.ok ? "" : "http_" + r.status);
       return r.ok && j.ok;
-    } catch (e) { clearTimeout(t); return false; }
+    } catch (e) { clearTimeout(t); post.error = "network"; return false; }
   }
+  /* Emails that could not go out wait here. Each one is retried with growing gaps
+     (1, 2, 4 ... up to 30 minutes), only while nobody is touching the table, and
+     ones the mailer will never accept (bad address, wrong key) are taken out of
+     the queue. Every plan stays in the staff list either way. */
+  const NEVER = ["invalid", "token", "bad_json"];
   let flushing = false;
-  async function flush() {
-    if (flushing) return; flushing = true;
+  async function flush(force) {
+    if (flushing || !navigator.onLine || !D.sendEndpoint) return;
+    if (!force && Date.now() - last < 20000 && !/^(attract|sent)/.test(S.route || "")) return;
+    flushing = true;
     try {
-      let q = getJ(OB);
-      for (const job of q.slice()) {
-        if (!navigator.onLine || !D.sendEndpoint) break;
-        if (await post(job)) { q = getJ(OB).filter(j => j.id !== job.id); setJ(OB, q); markLead(job.id, "sent"); }
+      for (const job of getJ(OB)) {
+        if (!force && (job.next || 0) > Date.now()) continue;
+        const ok = await post(job), err = post.error;
+        const q = getJ(OB);
+        if (ok || NEVER.includes(err)) {
+          setJ(OB, q.filter(j => j.id !== job.id)); markLead(job.id, ok ? "sent" : "failed: " + err);
+        } else {
+          const tries = (job.tries || 0) + 1;
+          q.forEach(j => { if (j.id === job.id) { j.tries = tries; j.next = Date.now() + Math.min(30, 2 ** (tries - 1)) * 60000; j.lastError = err; } });
+          setJ(OB, q);
+        }
+        await new Promise(r => setTimeout(r, 1500));
       }
     } finally { flushing = false; }
   }
   setInterval(flush, 45000);
-  addEventListener("online", flush);
+  addEventListener("online", () => flush(true));
 
   async function submit() {
     const f = S.form, okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim());
@@ -876,6 +897,14 @@
     r.className = "ripple"; r.style.left = p.x + "px"; r.style.top = p.y + "px"; stage.appendChild(r); setTimeout(() => r.remove(), 650);
   }, true);
   document.addEventListener("contextmenu", e => e.preventDefault());
+  /* Long days: after 2 hours, once the table has sat untouched on the home screen
+     for 2 minutes, reload it so the browser starts clean (everything comes from the
+     offline copy, so it is instant). Skipped when it would drop browser fullscreen. */
+  const BOOT = Date.now();
+  setInterval(() => {
+    const home = (S.route || "").startsWith("attract");
+    if (home && !locked && !flushing && Date.now() - BOOT > 2 * 3600000 && Date.now() - last > 120000 && !document.fullscreenElement) location.reload();
+  }, 30000);
   setInterval(() => {
     const name = (S.route || "").split(":")[0];
     if (locked || name === "attract" || name === "sent" || modalEl) return;
@@ -933,7 +962,7 @@
     m.addEventListener("click", e => {
       const a = e.target.closest("[data-a]"); if (!a) return;
       if (a.dataset.a === "csv") download("praxis-edge-gess-plans-" + stamp() + ".csv", "﻿" + csv(getJ(LS)), "text/csv");
-      if (a.dataset.a === "retry") { flush(); toast("Trying to send waiting plans"); }
+      if (a.dataset.a === "retry") { flush(true); toast("Trying to send waiting plans"); }
       if (a.dataset.a === "close") closeModal();
     });
     const clr = $('[data-a="clear"]', m); let ct;
